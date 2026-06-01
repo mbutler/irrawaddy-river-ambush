@@ -1,0 +1,24 @@
+{
+  "name": "irrawaddy-remotion",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Motion graphics for Irrawaddy River Ambush Phoenix Command video",
+  "scripts": {
+    "start": "remotion studio src/index.ts",
+    "build": "remotion bundle src/index.ts --out-dir dist",
+    "render:intro": "remotion render src/index.ts IrrawaddyIntro out/IrrawaddyIntro.mp4",
+    "render:ambush": "remotion render src/index.ts Phase1Ambush out/Phase1Ambush.mp4",
+    "render:all": "npm run render:intro && remotion render src/index.ts HistoricalMap out/HistoricalMap.mp4 && remotion render src/index.ts ForcesInfographic out/ForcesInfographic.mp4 && remotion render src/index.ts PhoenixPrimer out/PhoenixPrimer.mp4 && remotion render src/index.ts Phase1Ambush out/Phase1Ambush.mp4 && remotion render src/index.ts Phase2ReturnFire out/Phase2ReturnFire.mp4 && remotion render src/index.ts OutcomeDashboard out/OutcomeDashboard.mp4 && remotion render src/index.ts EALDemo out/EALDemo.mp4"
+  },
+  "dependencies": {
+    "@remotion/google-fonts": "^4.0.470",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@remotion/cli": "^4.0.0",
+    "@types/react": "^18.3.0",
+    "typescript": "^5.4.0"
+  }
+}
