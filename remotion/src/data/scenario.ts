@@ -148,7 +148,7 @@ export const COMBAT_BEATS: CombatBeat[] = [
     1,
     1,
     'Bravo — Thompson Snap Burst',
-    'Squad Bravo opens on the lead raft at forty hexes — eighty meters. Four Thompsons, snap burst from jungle cover.',
+    'Squad Bravo opens on the lead raft at forty hexes — seventy-three meters. Four Thompsons, snap burst from jungle cover.',
     'k-03',
     'raft-1',
     'Thompson M1928A1',
@@ -164,9 +164,9 @@ export const COMBAT_BEATS: CombatBeat[] = [
       visibility: ['Good Visibility'],
       targetSize: ['Standing Exposed'],
     },
-    34,
+    12,
     67,
-    ['Hit. DC 2 at 40 hex. Aggregate 4 SMGs off-screen.', 'Raft instability check: 50% — roll d6 ≥4 → 2 troops in water.']
+    ['HIT at 15% (roll 12 ≤ odds). EAL 3. DC 2 at 40 hex. Rep burst for 4× Thompson volley.', 'Raft instability check: 50% — roll d6 ≥4 → 2 troops in water.']
   ),
   beat(
     'beat-02',
@@ -214,9 +214,9 @@ export const COMBAT_BEATS: CombatBeat[] = [
       visibility: ['Good Visibility'],
       targetSize: ['Standing Exposed'],
     },
-    55,
+    18,
     88,
-    ['Hit. Enfilade across river lane.', 'M1919 jam scenario roll: 47 — clear.']
+    ['HIT at 24% (roll 18 ≤ odds). EAL 7. Enfilade across river lane.', 'M1919 jam scenario roll: 47 — clear (need 01).']
   ),
   beat(
     'beat-04',
@@ -325,11 +325,11 @@ export const COMBAT_BEATS: CombatBeat[] = [
     10,
     1,
     'Kachin Withdrawal',
-    'Phase ten. Whistle signal. Delta covers. Alpha/Bravo fade into jungle — no fire this impulse.',
+    'Phase ten. Whistle signal. Delta covers with M1 Garand — six Actions aim, one hundred eighty hexes.',
     'k-10',
     'raft-3',
     'M1 Garand',
-    4,
+    6,
     180,
     {
       sal: 10,
@@ -341,9 +341,9 @@ export const COMBAT_BEATS: CombatBeat[] = [
       visibility: ['Good Visibility'],
       targetSize: ['Standing Exposed'],
     },
-    44,
+    6,
     33,
-    ['Covering shot — hit. Engagement ends. Major Kachin victory tally.']
+    ['HIT at 7% (roll 6 ≤ odds). EAL 8 @ 180 hex, 6 Actions aim. Engagement ends.']
   ),
 ];
 

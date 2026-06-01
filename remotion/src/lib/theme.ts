@@ -1,4 +1,4 @@
-/** Design tokens from video/style-guide.md */
+/** Design tokens from style-guide.md */
 
 export const colors = {
   bgDark: '#0d1117',

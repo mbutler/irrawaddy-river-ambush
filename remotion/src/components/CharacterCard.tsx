@@ -1,7 +1,7 @@
 import React from 'react';
 import { interpolate, useCurrentFrame } from 'remotion';
 import { colors, fonts, layout } from '../lib/theme';
-import type { CharacterStats } from '../lib/phoenix';
+import { incapacitationChance, type CharacterStats } from '../lib/phoenix';
 
 interface CharacterCardProps {
   character: CharacterStats;
@@ -106,7 +106,9 @@ export const KVGauge: React.FC<KVGaugeProps> = ({ currentPD, kv, roll, startFram
   const fill = interpolate(local, [0, 20], [0, Math.min(100, (currentPD / kv) * 100)], {
     extrapolateRight: 'clamp',
   });
-  const failed = currentPD > kv && roll <= 99;
+  // Knockout Table: roll < IC → incapacitated (phoenix-command.md §2.7)
+  const ic = incapacitationChance(currentPD, kv);
+  const failed = ic > 0 && roll < ic;
   const barColor = failed ? colors.hudRed : colors.hudGreen;
 
   return (

@@ -250,7 +250,7 @@ VO recorded dry; room tone added in post.
 
 ## 11. Remotion Token Mapping
 
-All tokens live in `video/remotion/src/lib/theme.ts`:
+All tokens live in `remotion/src/lib/theme.ts`:
 
 ```typescript
 colors.bgDark, colors.alliedPrimary, fonts.headline, layout.safeMargin, motion.easeOut

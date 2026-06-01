@@ -4,7 +4,7 @@
 **Read rate:** ~140 words/minute  
 **Format:** `[ANIM:]` = motion graphics cue | `[SFX:]` = optional sound | `[PAUSE:]` = beat  
 
-Composition IDs in `[ANIM:]` match Remotion exports in `video/remotion/`.
+Composition IDs in `[ANIM:]` match Remotion exports in `remotion/`.
 
 ---
 
@@ -100,9 +100,9 @@ On paper, the Kachin field between fifty and one hundred guerrillas in two to fo
 
 `[ANIM: Squad icons Alpha Bravo Charlie Delta appear on near bank.]`
 
-Squad Alpha — led by an OSS officer we'll call Lieutenant Carter — holds the center. Two Bren guns, three Thompsons. Their job is sustained fire at two hundred to three hundred fifty meters.
+Squad Alpha — led by an OSS officer we'll call Lieutenant Carter — holds the center. Two Bren guns, three Thompsons. Their job is sustained fire at about a hundred twenty hexes — two hundred twenty meters — to the river lane.
 
-Squad Bravo — Naw San's Kachin fighters — holds the close bank. Eighty to one hundred fifty meters. All Thompsons. They will hurt the lead raft first.
+Squad Bravo — Naw San's Kachin fighters — holds the close bank. Forty hexes — about seventy-three meters — to the lead raft. All Thompsons. They will hurt the lead raft first.
 
 `[ANIM: Charlie and Delta icons.]`
 
@@ -133,7 +133,7 @@ The Bren Mk One in dot-three-oh-three British. At a hundred and twenty hexes —
 
 `[ANIM: FR-023 M1919 card.]`
 
-The M1919 A6 — the American medium machine gun. At two hundred hexes, penetration thirteen, damage class seven, same band as the Bren but from a weapon that can enfilade the entire river. In monsoon wet, there is a one-percent jam chance per turn. We will roll for it.
+The M1919 A6 — the American medium machine gun. At two hundred hexes, penetration thirteen, damage class seven, same band as the Bren but from a weapon that can enfilade the entire river. In monsoon wet, there is a one-percent jam chance per Phase — roll zero-one on d100. We will roll for it.
 
 `[ANIM: FR-024 Arisaka card.]`
 
@@ -202,9 +202,9 @@ Phoenix Command is a small-arms combat simulation published in the nineteen-eigh
 
 Time is measured in Phases. One Phase equals two seconds of real time. Each Phase divides into four Impulses of half a second. Everything happens simultaneously within an Impulse — all shooters fire, all bullets fly, all wounds are checked.
 
-`[ANIM: FR-031 Combat Actions bar for Carter — 2-2-1-1.]`
+`[ANIM: FR-031 Combat Actions bar for Carter — 2-1-1-1.]`
 
-Every character has Combat Actions per Phase — derived from Strength, Agility, Intelligence, skill level, and encumbrance. Lieutenant Carter, a Crack soldier, has six. That might be two Actions in Impulse one, two in Impulse two, one in three, one in four.
+Every character has Combat Actions per Phase — derived from Strength, Agility, Intelligence, skill level, and encumbrance. Lieutenant Carter, a Crack soldier, has five. That is two Actions in Impulse one, one in Impulse two, one in three, one in four — Table One-E.
 
 Moving one hex costs one Action. Assuming a firing stance costs two. A snap shot uses one Action of aim-and-fire combined — you do not aim for one Action and shoot on a second. Automatic weapons fire one burst per Impulse maximum.
 
@@ -250,15 +250,15 @@ Physical Damage measures wound severity — from superficial to instantly fatal.
 
 `[ANIM: PD counter ticks up on silhouette.]`
 
-Each Impulse a character takes damage, check incapacitation. Compare total PD against Knockout Value — half of Will times skill level. Roll d100. Fail, and you are shock-casualty — out of the fight.
+Each Impulse a character takes damage, check incapacitation. Compare total Physical Damage to Knockout Value on the Knockout Table. That gives an Incapacitation Chance — a percentage. Roll d100. If the roll is less than that chance, you fail — shock casualty, out of the fight. If the roll is equal or higher, you keep going.
 
-`[ANIM: KV gauge — PD 56 vs KV 35, roll 18, FAIL.]`
+`[ANIM: KV gauge — PD 56 vs KV 35, IC 25%, roll 18, FAIL.]`
 
 Veterans and recruits die the same way. Phoenix Command is honest about that.
 
 `[ANIM: Brief code scroll — phoenix-functions effectiveAccuracyLevel, oddsOfHitting, hitDamage — monospace on dark.]`
 
-I built the lookup engine in JavaScript — phoenix-functions — so every number you see on screen matches the rulebook tables exactly. No fudging. When the EAL panel says fifty-eight percent, that is Table Four-G.
+I built the lookup engine in JavaScript — phoenix-functions — so every number you see on screen matches the rulebook tables exactly. No fudging. When the EAL panel says forty-seven percent for Carter's Bren burst, that is Table Four-G.
 
 `[PAUSE: 1s]`
 
@@ -279,7 +279,7 @@ Here is our battlefield at the moment before the ambush.
 
 Alpha — center bank, a hundred twenty hexes to the lead raft. Carter's Bren teams have been aiming for six Actions before the clock starts. That is the surprise rule: the Kachin begin with prepared fire; the Japanese do not get to shoot during Phase one at all.
 
-Bravo — fifty hexes closer. Naw San's Thompsons on snap fire at the lead raft.
+Bravo — forty hexes to the lead raft. Naw San's Thompsons on snap fire.
 
 Charlie — the M1919 two hundred hexes back, bipod on hard cover, enfilade across the entire river lane.
 
@@ -298,7 +298,7 @@ Three rafts enter from upstream. Twelve, ten, and eight men. Green troops, skill
 **VO:**  
 Two men represent the fight.
 
-Lieutenant Carter — OSS advisor. Skill Level five, Skill Accuracy Level eleven, six Combat Actions, Knockout Value thirty-five. Weapon: Bren Mk One. Pre-aimed six Actions. Bipod mounted behind jungle hard cover.
+Lieutenant Carter — OSS advisor. Skill Level five, Skill Accuracy Level eleven, five Combat Actions, Knockout Value thirty-five. Weapon: Bren Mk One. Pre-aimed six Actions. Bipod mounted behind jungle hard cover.
 
 Private Yamada — on the lead raft. Skill Level two, SAL seven, four Combat Actions, Knockout Value ten. Weapon: Arisaka Type ninety-nine. No cover. Standing on bamboo that someone else is about to shoot.
 
@@ -330,19 +330,19 @@ The ambush begins.
 `[ANIM: FR-051 Beat-ThompsonVolley — full combat layout. Tracer Bravo to Raft 1.]`
 
 **VO:**  
-Squad Bravo opens fire.
+Squad Bravo opens fire. Four Thompsons — we resolve one representative burst on screen; the other guns use the same EAL off-camera.
 
 Four Thompson M1928A1 submachine guns, snap burst, forty hexes — seventy-three meters — target Standing Exposed on a drifting raft. Naw San, Skill Accuracy Level eleven. One Action of aim. Kneeling and braced behind hard cover.
 
 `[ANIM: EAL panel builds — Beat-ThompsonVolley / beat-01 from scenario.ts.]`
 
-Watch the EAL stack build. Aim Time modifier at one Action plus SAL. Range penalty at forty hexes. Target size for burst elevation — standing exposed on a raft, plus fourteen. Kneeling braced, plus five. Subtract SAB three for burst fire.
+Watch the EAL stack build. Aim Time modifier at one Action plus SAL. Range ALM at forty hexes. Movement — raft drifting half a hex per Impulse. Kneeling and braced, plus five. Target size for burst elevation — standing exposed, plus fourteen. Subtract SAB three for burst fire.
 
-The total Effective Accuracy Level cross-references to an odds percentage on Table Four-G.
+Effective Accuracy Level three. Table Four-G gives fifteen percent odds of hitting.
 
-`[ANIM: Dice roll — scripted 34. HIT.]`
+`[ANIM: Dice roll — scripted 12. HIT.]`
 
-I roll a thirty-four. That is a hit.
+I roll a twelve. Twelve is less than or equal to fifteen — hit.
 
 At this range, point-four-five ACP does penetration one point three, damage class two. Against unarmored troops, that is enough. We resolve hit location — roll sixty-seven — and Physical Damage.
 
@@ -367,11 +367,11 @@ This is the shot that defines the ambush. Lieutenant Carter, six Actions of aim,
 
 Aim Time at six Actions: minus six, plus Skill Accuracy Level eleven. Range ALM at a hundred twenty hexes — significant penalty, but the Bren was designed for exactly this. Bipod Mounted Weapon: plus three. Target burst elevation: plus fourteen. SAB minus three.
 
-The Effective Accuracy Level is — read the panel — and the odds are — read the panel. Phoenix-functions calculated this at import time. The code does not lie.
+Effective Accuracy Level thirteen. Odds of hitting: forty-seven percent.
 
 `[ANIM: Dice roll — scripted 22. HIT. Damage panel: location, PD, PEN, DC.]`
 
-Roll twenty-two. Hit.
+Roll twenty-two. Twenty-two is less than or equal to forty-seven — hit.
 
 Penetration thirteen. Damage class seven. Hit location roll forty-one. Physical Damage — read the panel. That soldier is not getting up.
 
@@ -392,13 +392,13 @@ Impulse Three. Charlie's M1919 A6 speaks.
 
 Two hundred hexes. Three hundred sixty-six meters. Monsoon haze — we could apply a visibility penalty beyond a hundred hexes, but today we give the gunner good visibility and let the range ALM do the work.
 
-First: jam check. Wet monsoon, one percent failure. Roll d100 — forty-seven. The gun fires.
+First: jam check. Wet monsoon, one percent failure per Phase — need a roll of zero-one. Roll d100 — forty-seven. The gun fires.
 
-Six Actions aim. Bipod mounted. Burst at Raft Two.
+Six Actions aim. Bipod mounted. Burst at Raft Two. Effective Accuracy Level seven. Odds: twenty-four percent.
 
-`[ANIM: Dice 55 — HIT. Enfilade tracer across full river width.]`
+`[ANIM: Dice 18 — HIT. Enfilade tracer across full river width.]`
 
-Hit. The M1919 enfilades the river lane — bullets that miss Raft Two still threaten the waterline. Two to four casualties on the second raft. Narratively, this is the moment Japanese officers understand they are not conducting a movement — they are surviving an execution.
+Roll eighteen. Hit. The M1919 enfilades the river lane. Two to four casualties on the second raft — this is the moment Japanese officers understand they are not conducting a movement, they are surviving an execution.
 
 ---
 
@@ -407,9 +407,9 @@ Hit. The M1919 enfilades the river lane — bullets that miss Raft Two still thr
 `[ANIM: FR-054 scatter miss — roll 71, red MISS, splash.]`
 
 **VO:**  
-Impulse Four. Bravo's second volley at thirty-five hexes as the current drifts the raft closer.
+Impulse Four. Bravo's second volley at thirty-five hexes as the current drifts the raft closer. Effective Accuracy Level three. Odds: fifteen percent.
 
-Roll seventy-one. Miss. The rounds scatter into the river — Table Five-C — and the half-second is gone.
+Roll seventy-one. Seventy-one is greater than fifteen — miss. The rounds scatter into the river — Table Five-C — and the half-second is gone.
 
 That is Phase One complete. Four Impulses. Two seconds of real time. The lead raft is bleeding. The Japanese have not fired a shot.
 
@@ -426,13 +426,13 @@ Private Yamada grabs his Arisaka. Hip fire from an unstable raft. Two hundred he
 
 `[ANIM: EAL panel beat-05 — low odds.]`
 
-The Effective Accuracy Level is abysmal. Roll seventy-eight. Miss.
+The Effective Accuracy Level is minus ten. Odds of hitting: zero percent. Roll seventy-eight. Miss.
 
 That is not bad luck. That is physics. The wide river, the jungle cover, the rocking platform, the low skill — Phoenix Command encodes all of it.
 
 `[ANIM: FR-056 Raft 2 LMG — sequential EAL panels.]`
 
-Raft Two's light machine gunner tries suppression. Green skill, hip fire, hundred thirty hexes. Roll ninety-one. Miss.
+Raft Two's light machine gunner tries suppression. Hip fire, hundred thirty hexes. Effective Accuracy Level minus ten. Odds: one percent. Roll ninety-one. Miss.
 
 Suppression in Phoenix Command is not a morale marker — it is the fact that your odds are terrible and you get one burst per Impulse while Thompsons keep coming.
 
@@ -445,7 +445,7 @@ Suppression in Phoenix Command is not a morale marker — it is the fact that yo
 **VO:**  
 Phase Four. Raft One has crossed fifty percent casualties.
 
-Scenario rule: survivors must pass a morale check or panic. In Phoenix Command terms, Yamada's accumulated Physical Damage exceeds his Knockout Value of ten. Incapacitation check — roll eighteen. Fail.
+Scenario rule: survivors must pass a morale check or panic. In Phoenix Command terms, Yamada's Physical Damage total of eighteen exceeds his Knockout Value of ten. Incapacitation Chance: twenty-five percent. Roll eighteen — less than twenty-five — fail.
 
 `[ANIM: Raft 1 SINKING variant. Troops surrender animation.]`
 
@@ -460,7 +460,7 @@ The lead raft is sinking. Survivors throw rifles. The fight goes out of them the
 **VO:**  
 Phase Ten. Lieutenant Carter blows the whistle — standard OSS signal to break contact.
 
-Squad Delta opens covering fire — Garand at a hundred eighty hexes, roll forty-four, hit — while Alpha and Bravo melt into jungle trails. The Kachin ignore difficult terrain on withdrawal. Japanese survivors on Raft Three paddle for the far bank and do not pursue.
+Squad Delta opens covering fire — M1 Garand, six Actions of aim, a hundred eighty hexes. Effective Accuracy Level eight. Odds: seven percent. Roll six — hit — while Alpha and Bravo melt into jungle trails. The Kachin ignore difficult terrain on withdrawal. Japanese survivors on Raft Three paddle for the far bank and do not pursue.
 
 `[ANIM: FR-059 casualty tracker final: 24/30 Japanese, 2/3 rafts sunk.]`
 

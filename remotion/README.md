@@ -1,11 +1,19 @@
 # Remotion — Irrawaddy River Ambush Motion Graphics
 
-React/Remotion project wired to `../../src/functions.js` for live Phoenix Command calculations.
+React/Remotion project wired to repo-root `src/functions.js` (phoenix-functions) for live Phoenix Command calculations.
 
 ## Setup
 
+From the repo root, link phoenix-functions first (once):
+
 ```bash
-cd video/remotion
+./scripts/link-phoenix.sh
+```
+
+Then:
+
+```bash
+cd remotion
 npm install
 npm start
 ```

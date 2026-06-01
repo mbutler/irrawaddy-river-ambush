@@ -1,6 +1,6 @@
 # Irrawaddy River Ambush — Phoenix Command Scenario
 
-Complete tabletop-to-simulation conversion for the motion-graphics playthrough. All EAL values are computed via `phoenix-functions` (`resolveFromWeapon` in `video/remotion/src/data/scenario.ts`).
+Complete tabletop-to-simulation conversion for the motion-graphics playthrough. All EAL values are computed via `phoenix-functions` (`resolveFromWeapon` in `remotion/src/data/scenario.ts`).
 
 ---
 
@@ -92,7 +92,7 @@ Full weapon data: `src/weapons.js`
 | Kachin jungle cover | Shooters: `Fire Over/Around` target size for return fire; bank = hard cover (Table 7C) |
 | Kachin hidden start | Japanese target `Fire Over/Around` until muzzle flash spotted (Phase 2+) |
 | Monsoon rain | Optional: `Smoke, Haze, Fog` ALM beyond 100 hexes (−2 per visibility table) |
-| M1919 jam 1%/turn | d100 roll **01** = jam for that Phase; narrate wet monsoon |
+| M1919 jam 1%/Phase | d100 roll **01** = jam for that Phase; narrate wet monsoon |
 | Raft instability | On raft hit: d6 ≥4 → 1D6 troops overboard (scenario flavor) |
 | Low Japanese morale | At 50% raft casualties: incapacitation checks at −1 narrative penalty |
 | Kachin terrain move | Ignore difficult terrain on withdrawal |
@@ -126,7 +126,7 @@ Full weapon data: `src/weapons.js`
 | Gun Combat SL | 5 |
 | SAL | 11 |
 | ISF | 23 |
-| CA | 6 (2-2-1-1 per impulse) |
+| CA | 5 (2-1-1-1 per impulse) |
 | KV | 35 |
 | Weapon | Bren Mk1 |
 | Encumbrance | 35 |
@@ -136,7 +136,7 @@ Full weapon data: `src/weapons.js`
 | Stat | Value |
 |------|-------|
 | STR 12, INT 12, WIL 14, HLT 12, AGI 12 |
-| SL 5, SAL 11, CA 6, KV 35 |
+| SL 5, SAL 11, CA 5 (2-1-1-1), KV 35 |
 | Weapon | Thompson M1928A1 |
 
 ### MG Gunner Chen — k-08
@@ -175,11 +175,11 @@ Each beat matches `COMBAT_BEATS` in `scenario.ts`. Values below are computed at 
 | Target | Standing Exposed, raft moving 0.5 hex/Imp |
 | Visibility | Good |
 
-**Verify EAL live:** `node video/scripts/log-beats.mjs` (after `npm install` at repo root)
+**Computed:** EAL 3, odds 15%  
 
-**Scripted roll:** 34 → compare to computed odds  
+**Scripted roll:** 12 → **HIT** (EAL 3, odds 15%)  
 **Damage @ 40 hex:** PEN 1.3, DC 2  
-**Notes:** Aggregate 4 SMGs; 3 casualties Raft 1; instability check d6
+**Notes:** Representative burst for 4× Thompson volley; raft instability check d6 ≥4
 
 ---
 
@@ -194,7 +194,9 @@ Each beat matches `COMBAT_BEATS` in `scenario.ts`. Values below are computed at 
 | Situation | Bipod Mounted Weapon (+3) |
 | Target | Standing Exposed |
 
-**Scripted roll:** 22 → **HIT**  
+**Computed:** EAL 13, odds 47%  
+
+**Scripted roll:** 22 → **HIT** (EAL 13, odds 47%)  
 **Damage @ 120 hex:** PEN 13, DC 7 — lethal hits  
 **Notes:** Table 5A burst distribution; primary Remotion composition `Phase1Ambush`
 
@@ -210,8 +212,10 @@ Each beat matches `COMBAT_BEATS` in `scenario.ts`. Values below are computed at 
 | Range | 200 hex (366 m) |
 | Situation | Bipod Mounted Weapon |
 
+**Computed:** EAL 7, odds 24%  
+
 **Jam check:** d100 = 47 (not 01 — clear)  
-**Scripted roll:** 55 → **HIT**  
+**Scripted roll:** 18 → **HIT** (EAL 7, odds 24%)  
 **Notes:** Enfilade narrative; raft 2 casualties
 
 ---
@@ -220,7 +224,8 @@ Each beat matches `COMBAT_BEATS` in `scenario.ts`. Values below are computed at 
 **Bravo — Second Thompson volley**
 
 | Range | 35 hex (drifted closer) |
-| Scripted roll | 71 → likely **MISS** — show scatter into water |
+| EAL / odds | 3 / 15% |
+| Scripted roll | 71 → **MISS** — show scatter into water |
 
 ---
 
@@ -235,13 +240,13 @@ Each beat matches `COMBAT_BEATS` in `scenario.ts`. Values below are computed at 
 | Shooter speed | 0.5 (unstable raft) |
 | Target | Fire Over/Around (concealed Kachin) |
 
-**Scripted roll:** 78 → **MISS**  
+**Scripted roll:** 78 → **MISS** (EAL −10, odds 0%)  
 **Notes:** Composition `Phase2ReturnFire`
 
 ---
 
 ### BEAT 06 — Phase 2, Impulse 2  
-**Raft 2 LMG vs Alpha** — miss, suppression narrative
+**Raft 2 LMG vs Alpha** — EAL −10, odds 1%; roll 91 → **MISS**; suppression narrative only
 
 ---
 
@@ -249,8 +254,8 @@ Each beat matches `COMBAT_BEATS` in `scenario.ts`. Values below are computed at 
 **Raft 1 morale collapse**
 
 - Raft 1 at 50%+ casualties  
-- Yamada PD total > KV 10  
-- Incapacitation roll: 18 → **FAIL** — panic/surrender  
+- Yamada PD total 18 > KV 10  
+- Incapacitation Chance 25%; roll 18 < 25 → **FAIL** — panic/surrender  
 - **Visual:** KV gauge, raft icon SINKING
 
 ---
@@ -259,8 +264,10 @@ Each beat matches `COMBAT_BEATS` in `scenario.ts`. Values below are computed at 
 **Delta covering fire — withdrawal**
 
 | Shooter | Flank Guard (Garand) |
+| Weapon | M1 Garand, 6 Actions, Single Shot |
 | Range | 180 hex vs Raft 3 |
-| Roll | 44 → **HIT** |
+| EAL / odds | 8 / 7% |
+| Roll | 6 → **HIT** |
 | Narrative | Whistle signal; squads fade into jungle; engagement ends |
 
 ---
@@ -308,10 +315,10 @@ Do not roll individually for all 18 Kachin — state aggregate on VO, show one r
 
 | Need | Location |
 |------|----------|
-| Live EAL | `video/remotion/src/lib/phoenix.ts` |
-| Beat data | `video/remotion/src/data/scenario.ts` |
+| Live EAL | `remotion/src/lib/phoenix.ts` |
+| Beat data | `remotion/src/data/scenario.ts` |
 | Weapons | `src/weapons.js` |
 | Rules text | `phoenix-command.md` |
-| VO script | `video/motion-script.md` |
-| Shot list | `video/storyboard.md` |
-| Frame specs | `video/frames.md` |
+| VO script | `motion-script.md` |
+| Shot list | `storyboard.md` |
+| Frame specs | `frames.md` |

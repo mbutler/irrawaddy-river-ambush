@@ -2,7 +2,7 @@
  * Wrapper around phoenix-functions for Remotion compositions.
  * Resolves combat beats with the same math as the rulebook.
  *
- * The parent src/ files are plain CommonJS JS modules. We import them via
+ * Repo-root src/ (phoenix-functions) files are plain JS modules. We import via
  * webpack extensionAlias (remotion.config.ts) which resolves .js → .ts/.tsx.
  * We use `any` casts on the weapons/tables objects because they are large
  * dynamic runtime structures not worth duplicating as TS interfaces here.
@@ -27,10 +27,10 @@ import {
   hitLocation,
   incapacitationChance,
   burstFire,
-} from '../../../../src/functions.js';
+} from '../../../src/functions.js';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { weapons as _weapons } from '../../../../src/weapons.js';
+import { weapons as _weapons } from '../../../src/weapons.js';
 
 // Typed access to the weapons dictionary
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -144,7 +144,8 @@ export function resolveFromWeapon(
 ): ResolvedShot {
   const weapon = weapons[weaponName];
   const aimMod = weapon['Aim Time'][String(aimActions)] ?? weapon['Aim Time']['1'];
-  const sab = weapon.SAB ?? 0;
+  // SAB applies to automatic burst fire only, not single shots (phoenix-command.md §2.4)
+  const sab = partialMods.shotType === 'Burst' ? (weapon.SAB ?? 0) : 0;
   const fullMods: CombatMods = {
     ...partialMods,
     weaponAimMod: aimMod,

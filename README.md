@@ -18,7 +18,7 @@ Complete production assets for a YouTube documentary/playthrough of the July 194
 1. **Read** `scenario-pc.md` — understand forces, scale, and pre-scripted combat beats.
 2. **Design** static frames in Figma using `style-guide.md` + `frames.md` as specs.
 3. **Record** voiceover from `motion-script.md` (or record section-by-section aligned to storyboard).
-4. **Animate** in Remotion (`cd video/remotion && npm install && npm start`) — compositions match storyboard IDs.
+4. **Animate** in Remotion (`cd remotion && npm install && npm start`) — compositions match storyboard IDs.
 5. **Composite** in your NLE (DaVinci, Premiere) — VO bed + Remotion exports + archival B-roll.
 
 ## Video Specs
@@ -34,24 +34,37 @@ Complete production assets for a YouTube documentary/playthrough of the July 194
 2. **Hybrid Mode** — real geography morphs into tactical tokens and range arcs
 3. **Simulation Mode** — Phoenix Command HUD (EAL panel, dice, phase clock, damage)
 
+## Development Setup
+
+Combat math comes from [phoenix-functions](https://github.com/mbutler/phoenix-functions). Clone it next to this repo, then link its `src/` here:
+
+```bash
+git clone https://github.com/mbutler/phoenix-functions ../phoenix-functions
+./scripts/link-phoenix.sh
+```
+
+Override the path with `PHOENIX_FUNCTIONS_PATH` if needed. The script creates `src/` → `../phoenix-functions/src`, installs dependencies, and builds `dist/phoenix-functions.js` (used by `log-beats.mjs`). Remotion imports source files directly from `src/` via webpack.
+
 ## Remotion Quick Start
 
 ```bash
-cd video/remotion
+cd remotion
 npm install
-npm start          # Remotion Studio
+npm start               # Remotion Studio at http://localhost:3000
 npm run render:intro    # Export IrrawaddyIntro composition
 npm run render:ambush   # Export Phase1Ambush composition
 npm run render:all      # Batch export all compositions
 ```
 
-Compositions are registered in `remotion/src/Root.tsx`. All combat math uses `../../src/functions.js` via the local `phoenix` wrapper — numbers on screen match the rulebook.
+Compositions are registered in `remotion/src/Root.tsx`. All combat math uses repo-root `src/functions.js` (from phoenix-functions) via the local `phoenix` wrapper — numbers on screen match the rulebook.
+
+Verify beat EAL offline: `node scripts/log-beats.mjs`
 
 ## Source Material
 
-- Scenario: `../Irrawaddy River Ambush.pdf`
-- Rules: `../phoenix-command.md`
-- Lookup engine: `../src/functions.js`, `../src/weapons.js`, `../src/tables.js`
+- Scenario: [`Irrawaddy River Ambush.pdf`](./Irrawaddy%20River%20Ambush.pdf)
+- Rules: [`phoenix-command.md`](./phoenix-command.md)
+- Lookup engine: `src/functions.js`, `src/weapons.js`, `src/tables.js` (phoenix-functions, linked above)
 
 ## Composition ↔ Storyboard Map
 
