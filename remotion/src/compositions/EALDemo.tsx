@@ -7,8 +7,8 @@ import { resolveFromWeapon } from '../lib/phoenix';
 import { TitleCard } from '../components/VictoryDashboard';
 import { VictoryDashboard } from '../components/VictoryDashboard';
 
-// Demo beat: Bren Mk1 burst at 120 hexes — beat-02 (Alpha hero shot)
-const DEMO_WEAPON = 'Bren Mk1';
+// Demo beat: BAR A2 burst at 120 hexes — beat-02 (Alpha hero shot)
+const DEMO_WEAPON = 'BAR A2';
 const DEMO_MODS = {
   sal: 11,
   shotType: 'Burst' as const,

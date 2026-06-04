@@ -24,7 +24,7 @@ const WEAPON_SPECS = [
     side: 'kachin' as const,
     role: 'Suppressive fire — pins rafts in open water',
     rangeHex: 120,
-    delay: 60,
+    delay: 36,
   },
   {
     key: 'M1919 A6',
@@ -32,7 +32,23 @@ const WEAPON_SPECS = [
     side: 'kachin' as const,
     role: 'Long-range enfilade — entire river lane',
     rangeHex: 200,
-    delay: 120,
+    delay: 72,
+  },
+  {
+    key: 'BAR A2',
+    caliber: '.30-06',
+    side: 'kachin' as const,
+    role: 'Squad automatic rifle — Carter hero shot @ 120 hex',
+    rangeHex: 120,
+    delay: 108,
+  },
+  {
+    key: 'M1 Carbine',
+    caliber: '.30 Carbine',
+    side: 'kachin' as const,
+    role: 'Light rifle — close bank @ 40 hex; withdrawal cover @ 180 hex',
+    rangeHex: 40,
+    delay: 144,
   },
   {
     key: 'Arisaka Type 99',
@@ -42,6 +58,14 @@ const WEAPON_SPECS = [
     rangeHex: 200,
     delay: 180,
   },
+];
+
+const LOADOUT_SEGMENTS = [
+  { pct: 28, color: colors.alliedPrimary, label: '28% Thompson' },
+  { pct: 44, color: colors.riverFoam, label: '44% M1 Carbine' },
+  { pct: 11, color: colors.jungleAccent, label: '11% Bren' },
+  { pct: 11, color: colors.hudPhosphor, label: '11% BAR' },
+  { pct: 6, color: colors.neutral, label: '6% M1919' },
 ];
 
 export const ForcesInfographic: React.FC = () => {
@@ -72,21 +96,20 @@ export const ForcesInfographic: React.FC = () => {
         FORCES &amp; ARMAMENT
       </div>
 
-      {/* Weapon cards — stagger in, then PERSIST for the rest of the composition */}
-      <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
+      {/* Weapon cards — stagger in, then persist */}
+      <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', maxWidth: 1760 }}>
         {WEAPON_SPECS.map((spec) => {
           const w = weapons[spec.key];
           const band = w[String(spec.rangeHex)] ?? w['100'];
           const fmj = band?.FMJ ?? band?.AP ?? {};
 
-          // Fade in on stagger delay, then stay visible
           const cardOpacity = interpolate(frame, [spec.delay, spec.delay + 20], [0, 1], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
           });
 
           return (
-            <div key={spec.key} style={{ opacity: cardOpacity }}>
+            <div key={spec.key} style={{ opacity: cardOpacity, flex: '0 1 320px' }}>
               <WeaponCard
                 name={spec.key}
                 caliber={spec.caliber}
@@ -105,14 +128,17 @@ export const ForcesInfographic: React.FC = () => {
         })}
       </div>
 
-      {/* Kachin loadout bar — fades in last */}
+      {/* Kachin loadout bar — fades in after weapon cards */}
       <div
         style={{
           position: 'absolute',
           bottom: layout.safeMargin + 40,
           right: layout.safeMargin,
-          width: 380,
-          opacity: interpolate(frame, [fps * 7, fps * 9], [0, 1], { extrapolateRight: 'clamp' }),
+          width: 420,
+          opacity: interpolate(frame, [fps * 8, fps * 10], [0, 1], {
+            extrapolateLeft: 'clamp',
+            extrapolateRight: 'clamp',
+          }),
         }}
       >
         <div
@@ -124,7 +150,7 @@ export const ForcesInfographic: React.FC = () => {
             marginBottom: 10,
           }}
         >
-          KACHIN RANGER LOADOUT
+          KACHIN RANGER LOADOUT · 18 FIGHTERS
         </div>
         <div
           style={{
@@ -135,12 +161,7 @@ export const ForcesInfographic: React.FC = () => {
             border: `1px solid ${colors.bgPanelBorder}`,
           }}
         >
-          {[
-            { pct: 55, color: colors.alliedPrimary, label: '55% SMG' },
-            { pct: 28, color: colors.jungleAccent, label: '28% LMG' },
-            { pct: 12, color: colors.neutral, label: '12% HMG' },
-            { pct: 5, color: colors.textMuted, label: '5%' },
-          ].map((seg) => (
+          {LOADOUT_SEGMENTS.map((seg) => (
             <div
               key={seg.label}
               style={{
@@ -155,17 +176,17 @@ export const ForcesInfographic: React.FC = () => {
         <div
           style={{
             display: 'flex',
-            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '4px 12px',
             fontSize: 10,
             color: colors.textMuted,
             marginTop: 6,
             fontFamily: fonts.data,
           }}
         >
-          <span>55% Thompson SMG</span>
-          <span>28% Bren LMG</span>
-          <span>12% M1919</span>
-          <span>5% Garand</span>
+          {LOADOUT_SEGMENTS.map((seg) => (
+            <span key={seg.label}>{seg.label}</span>
+          ))}
         </div>
       </div>
     </AbsoluteFill>

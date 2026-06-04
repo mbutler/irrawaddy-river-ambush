@@ -1,5 +1,5 @@
 import React from 'react';
-import { Composition, continueRender, delayRender } from 'remotion';
+import { Composition } from 'remotion';
 import { IrrawaddyIntro } from './compositions/IrrawaddyIntro';
 import { HistoricalMap, PhoenixPrimer, TacticalSetup } from './compositions/HistoricalMap';
 import { ForcesInfographic } from './compositions/ForcesInfographic';
@@ -18,18 +18,15 @@ import { layout } from './lib/theme';
 
 const FPS = 30;
 
-// Load Google Fonts before any composition renders
-const fontHandle = delayRender('Loading Google Fonts');
-
-const fontUrl =
-  'https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Source+Sans+3:wght@400;600&family=Source+Serif+4:ital,wght@0,400;1,400&display=swap';
-
-const link = document.createElement('link');
-link.rel = 'stylesheet';
-link.href = fontUrl;
-link.onload = () => continueRender(fontHandle);
-link.onerror = () => continueRender(fontHandle); // don't block on font failure
-document.head.appendChild(link);
+// Non-blocking font load — delayRender caused timeouts on long batch renders
+if (typeof document !== 'undefined' && !document.querySelector('link[data-irrawaddy-fonts]')) {
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.dataset.irrawaddyFonts = 'true';
+  link.href =
+    'https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Source+Sans+3:wght@400;600&family=Source+Serif+4:ital,wght@0,400;1,400&display=swap';
+  document.head.appendChild(link);
+}
 
 export const RemotionRoot: React.FC = () => {
   return (

@@ -14,6 +14,12 @@ interface CombatResolutionProps {
   beatId: string;
 }
 
+/** Secondary volley labels — on-screen rep differs from full squad fire */
+const BEAT_OVERLAYS: Partial<Record<string, string>> = {
+  'beat-01': '+ 2× M1 Carbine @ 40 hex (off-screen volley)',
+  'beat-08': 'Delta: 3× M1 Carbine covering fire',
+};
+
 // Map character IDs to squad/position IDs for tracer routing
 const CHAR_TO_SQUAD: Record<string, string> = {
   'k-01': 'alpha',
@@ -80,6 +86,12 @@ export const CombatResolution: React.FC<CombatResolutionProps> = ({ beatId }) =>
 
   // Notes fade-in (after narration)
   const notesOpacity = interpolate(frame, [fps * 4, fps * 5], [0, 1], {
+    extrapolateRight: 'clamp',
+  });
+
+  const overlayLabel = BEAT_OVERLAYS[beatId];
+  const overlayOpacity = interpolate(frame, [fps * 2, fps * 2.5], [0, 1], {
+    extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
@@ -166,6 +178,26 @@ export const CombatResolution: React.FC<CombatResolutionProps> = ({ beatId }) =>
           startFrame={0}
         />
       </Sequence>
+
+      {overlayLabel && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 500,
+            right: layout.safeMargin,
+            width: 420,
+            fontFamily: fonts.data,
+            fontSize: 11,
+            letterSpacing: '0.06em',
+            color: colors.riverFoam,
+            textAlign: 'right',
+            opacity: overlayOpacity,
+            pointerEvents: 'none',
+          }}
+        >
+          {overlayLabel}
+        </div>
+      )}
 
       {/* ── Bottom right: Damage readout (fire beat, on hit) ─────────────── */}
       {damage && hit && beat.beatType === 'fire' && (
