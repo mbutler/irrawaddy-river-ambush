@@ -46,7 +46,7 @@ const beats = [
   },
   {
     id: 'beat-02',
-    weapon: 'Bren Mk1',
+    weapon: 'BAR A2',
     aim: 6,
     roll: 22,
     mods: { sal: 11, shotType: 'Burst', targetSpeed: 0.5, shooterSpeed: 0, range: 120,
@@ -86,7 +86,7 @@ const beats = [
   },
   {
     id: 'beat-08',
-    weapon: 'M1 Garand',
+    weapon: 'M1 Carbine',
     aim: 6,
     roll: 6,
     mods: { sal: 10, shotType: 'Single Shot', targetSpeed: 0.5, shooterSpeed: 0, range: 180,

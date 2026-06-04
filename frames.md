@@ -193,8 +193,32 @@ Same treatment as FR-015. Caption: `Myitkyina campaign — combined Allied press
 
 ---
 
-### FR-024 · Weapon Card — Arisaka Type 99
+### FR-024 · Weapon Card — BAR A2
+**Storyboard:** SB-060  
+
+| Field | Value |
+|-------|-------|
+| Caliber | .30-06 |
+| PEN / DC | 15 / 7 @ 120 hex |
+| ROF | 4 AC (auto) |
+| SAB | 4 |
+| Role | Squad automatic rifle — Carter hero shot @ 120 hex |
+
+---
+
+### FR-025 · Weapon Card — M1 Carbine
 **Storyboard:** SB-062  
+
+| Field | Value |
+|-------|-------|
+| Caliber | .30 Carbine |
+| PEN / DC | 5.8 / 5 @ 40 hex · 2.4 / 2 @ 180 hex |
+| Role | Light rifle — close bank and withdrawal cover |
+
+---
+
+### FR-026 · Weapon Card — Arisaka Type 99
+**Storyboard:** SB-064  
 **Component:** `WeaponCard` japanese  
 
 | Field | Value |
@@ -204,21 +228,22 @@ Same treatment as FR-015. Caption: `Myitkyina campaign — combined Allied press
 
 ---
 
-### FR-025 · Kachin Loadout Donut
+### FR-027 · Kachin Loadout Donut
 **Storyboard:** SB-066  
 
 | Segment | % | Color |
 |---------|---|-------|
-| Thompson / SMG | 60 | `#e8a838` |
-| Bren LMG | 25 | `#8fbc8f` |
-| M1919 HMG | 10 | `#58a6ff` |
-| Other | 5 | `#6e7681` |
+| Thompson / SMG | 28 | `#e8a838` |
+| M1 Carbine | 44 | `#a8c8e8` |
+| Bren LMG | 11 | `#8fbc8f` |
+| BAR A2 | 11 | `#c9a227` |
+| M1919 HMG | 6 | `#58a6ff` |
 
 Center label: `KACHIN LOADOUT` mono 12px.
 
 ---
 
-### FR-026 · Japanese Raft Cross-Section
+### FR-028 · Japanese Raft Cross-Section
 **Storyboard:** SB-070  
 
 | Element | Spec |
@@ -230,7 +255,7 @@ Center label: `KACHIN LOADOUT` mono 12px.
 
 ---
 
-### FR-027 · Terrain Cross-Section
+### FR-029 · Terrain Cross-Section
 **Storyboard:** SB-074  
 
 Side view: jungle bank (hard cover +2 narrative) | river 1000m annotation | far bank sparse.  
@@ -271,7 +296,7 @@ Header only: `EFFECTIVE ACCURACY LEVEL` — rows ghosted.
 **Storyboard:** SB-091  
 **Component:** `EALPanel` complete  
 
-Use live values from `resolveFromWeapon('Bren Mk1', 6, ...)`.
+Use live values from `resolveFromWeapon('BAR A2', 6, ...)` (hero beat) or `Bren Mk1` for parallel Alpha volley.
 
 ---
 
@@ -341,7 +366,7 @@ Full stats per scenario-pc.md.
 | Medium | 50–150 | `#ffc857` 10% |
 | Long | 150–250 | `#58a6ff` 10% |
 
-Labels: Thompson / Bren / M1919 sweet spots.
+Labels: Thompson / Carbine / BAR / Bren / M1919 sweet spots.
 
 ---
 
@@ -378,11 +403,12 @@ Labels: Thompson / Bren / M1919 sweet spots.
 ### FR-051 · Beat 01 — Thompson Volley
 **Storyboard:** SB-145  
 **Remotion:** `Beat-ThompsonVolley`  
-Raft 1 active, Bravo active, casualties +3 after resolve.
+Raft 1 active, Bravo active, casualties +3 after resolve.  
+**Optional overlay:** `+ 2× M1 Carbine @ 40 hex (off-screen volley)` — mono 11px below EAL panel.
 
 ---
 
-### FR-052 · Beat 02 — Bren Hero Shot
+### FR-052 · Beat 02 — BAR Hero Shot
 **Storyboard:** SB-152  
 **Remotion:** `Phase1Ambush`  
 Primary thumbnail frame: EAL visible, dice mid-lock, tracer to Raft 1.
@@ -422,7 +448,8 @@ Split: Alpha Bren position vs Raft 2 LMG, both EAL panels (sequential).
 
 ### FR-058 · Beat 08 — Withdrawal
 **Storyboard:** SB-185  
-Squads fade into jungle (opacity 1→0), Delta tracer, whistle icon optional.
+Squads fade into jungle (opacity 1→0), Delta M1 Carbine tracer @ 180 hex, whistle icon optional.  
+**Optional overlay:** `Delta: 3× M1 Carbine covering fire` — mono 11px.
 
 ---
 

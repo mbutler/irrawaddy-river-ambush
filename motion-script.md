@@ -29,7 +29,7 @@ But the Allies are not alone on this river.
 
 `[ANIM: Jungle bank left — hidden squad icons pulse once at 30% opacity, then vanish.]`
 
-In the jungle along the bank, men who have lived in this terrain their entire lives lie waiting — trained by the Office of Strategic Services, armed with American Thompsons and British Bren guns, instructed to kill quickly and vanish before the enemy can respond.
+In the jungle along the bank, men who have lived in this terrain their entire lives lie waiting — trained by the Office of Strategic Services, armed with American Thompsons, M1 Carbines, BARs, and British Bren guns, instructed to kill quickly and vanish before the enemy can respond.
 
 This is the Irrawaddy River ambush. And today, we are going to fight it twice: once as history happened… and once as Phoenix Command calculates it, shot by shot, wound by wound, second by second.
 
@@ -71,7 +71,7 @@ Detachment 101 was America's experiment in fighting a jungle war without fightin
 
 `[ANIM: Caption overlay: "OSS Detachment 101 — northern Burma, 1944"]`
 
-The CIA's own historical account confirms river ambushes against troop-carrying rafts as standard operating procedure during the Myitkyina campaign. Army Special Operations history documents the weapons: M1A1 Thompsons, Bren guns, M1919 machine guns — supplied by air drop.
+The CIA's own historical account confirms river ambushes against troop-carrying rafts as standard operating procedure during the Myitkyina campaign. Army Special Operations history documents the weapons: M1A1 Thompsons, Bren guns, M1919 machine guns — supplied by air drop. Recent research on Detachment 101 supply adds the M1918A2 Browning Automatic Rifle and the M1 Carbine — lighter for jungle movement, still lethal on the river.
 
 This scenario is not invented. It is assembled from primary sources: campaign studies, intelligence histories, and the operational records of guerrilla warfare in the Irrawaddy valley.
 
@@ -100,15 +100,15 @@ On paper, the Kachin field between fifty and one hundred guerrillas in two to fo
 
 `[ANIM: Squad icons Alpha Bravo Charlie Delta appear on near bank.]`
 
-Squad Alpha — led by an OSS officer we'll call Lieutenant Carter — holds the center. Two Bren guns, three Thompsons. Their job is sustained fire at about a hundred twenty hexes — two hundred twenty meters — to the river lane.
+Squad Alpha — led by an OSS officer we'll call Lieutenant Carter — holds the center. Carter carries a BAR. One Bren gunner backs him up. Two M1 Carbines and a Thompson round out the squad. Their job is sustained fire at about a hundred twenty hexes — two hundred twenty meters — to the river lane.
 
-Squad Bravo — Naw San's Kachin fighters — holds the close bank. Forty hexes — about seventy-three meters — to the lead raft. All Thompsons. They will hurt the lead raft first.
+Squad Bravo — Naw San's Kachin fighters — holds the close bank. Forty hexes — about seventy-three meters — to the lead raft. Three Thompsons and two M1 Carbines. They will hurt the lead raft first.
 
 `[ANIM: Charlie and Delta icons.]`
 
-Squad Charlie is the machine-gun section. An M1919 A6 on a bipod, covering the entire river lane out to four hundred meters and beyond.
+Squad Charlie is the machine-gun section — M1919 A6 on a bipod, plus a second automatic rifle team with another BAR and a Bren, a Thompson, and a carbine for the river lane.
 
-Squad Delta is the flank guard and withdrawal element. They do not fire in the opening volley. They will cover the retreat when the whistle blows.
+Squad Delta is the flank guard and withdrawal element — three M1 Carbines and one Thompson. They do not fire in the opening volley. They will cover the retreat when the whistle blows.
 
 `[ANIM: Three raft tokens deploy upstream on river center.]`
 
@@ -118,7 +118,7 @@ Facing them: three bamboo rafts carrying thirty Japanese soldiers from the Fifte
 
 ### SC-011 · 7:00 – 10:30
 
-`[ANIM: FR-021 through FR-024 weapon cards sequence — 2s each. ForcesInfographic composition.]`
+`[ANIM: FR-021 through FR-026 weapon cards sequence — 2s each. ForcesInfographic composition.]`
 
 **VO:**  
 Let me walk you through the weapons, because Phoenix Command models each one individually — weight, rate of fire, penetration, damage class, aim time modifiers — all of it matters.
@@ -135,19 +135,27 @@ The Bren Mk One in dot-three-oh-three British. At a hundred and twenty hexes —
 
 The M1919 A6 — the American medium machine gun. At two hundred hexes, penetration thirteen, damage class seven, same band as the Bren but from a weapon that can enfilade the entire river. In monsoon wet, there is a one-percent jam chance per Phase — roll zero-one on d100. We will roll for it.
 
-`[ANIM: FR-024 Arisaka card.]`
+`[ANIM: FR-024 BAR A2 card.]`
+
+The M1918A2 Browning Automatic Rifle — we model it as BAR A2 in thirty-oh-six. At a hundred twenty hexes, penetration fifteen, damage class seven. Twenty-round magazine, bipod fire, the American answer to a light machine gun in the jungle. Carter will fire this one on screen.
+
+`[ANIM: FR-025 M1 Carbine card.]`
+
+The M1 Carbine in thirty carbine. At forty hexes on the close bank, penetration five point eight, damage class five — more punch than a Thompson, lighter than a Garand. Almost half our eighteen fighters carry one. On withdrawal, at a hundred eighty hexes, penetration drops to two point four — but a lucky hit still stops pursuit.
+
+`[ANIM: FR-026 Arisaka card.]`
 
 The Japanese carry Type ninety-nine Arisaka rifles — seven point seven millimeter bolt-action. At two hundred hexes they can still kill you. But on a rocking bamboo raft, firing at concealed muzzle flashes across hundreds of meters of open water? Phoenix Command will show you exactly how unlikely that is.
 
-`[ANIM: FR-025 loadout donut chart builds.]`
+`[ANIM: FR-027 loadout donut chart builds.]`
 
-Sixty percent of Kachin fighters carry submachine guns. Twenty-five percent serve Bren guns. Ten percent crew the M1919. The Japanese are seventy percent rifle, one or two light machine guns per raft, and zero cover.
+Twenty-eight percent Thompsons. Forty-four percent M1 Carbines. Eleven percent Bren guns. Eleven percent BAR teams. Six percent on the M1919 crew. The Japanese are seventy percent rifle, one or two light machine guns per raft, and zero cover.
 
 ---
 
 ### SC-012 · 10:30 – 13:00
 
-`[ANIM: FR-026 raft cross-section. FR-027 terrain cross-section side view.]`
+`[ANIM: FR-028 raft cross-section. FR-029 terrain cross-section side view.]`
 
 **VO:**  
 The terrain is the Kachin Rangers' greatest weapon.
@@ -258,7 +266,7 @@ Veterans and recruits die the same way. Phoenix Command is honest about that.
 
 `[ANIM: Brief code scroll — phoenix-functions effectiveAccuracyLevel, oddsOfHitting, hitDamage — monospace on dark.]`
 
-I built the lookup engine in JavaScript — phoenix-functions — so every number you see on screen matches the rulebook tables exactly. No fudging. When the EAL panel says forty-seven percent for Carter's Bren burst, that is Table Four-G.
+I built the lookup engine in JavaScript — phoenix-functions — so every number you see on screen matches the rulebook tables exactly. No fudging. When the EAL panel says forty-three percent for Carter's BAR burst, that is Table Four-G.
 
 `[PAUSE: 1s]`
 
@@ -277,7 +285,7 @@ Here is our battlefield at the moment before the ambush.
 
 `[ANIM: Squad positions highlight one by one with range arcs to river center.]`
 
-Alpha — center bank, a hundred twenty hexes to the lead raft. Carter's Bren teams have been aiming for six Actions before the clock starts. That is the surprise rule: the Kachin begin with prepared fire; the Japanese do not get to shoot during Phase one at all.
+Alpha — center bank, a hundred twenty hexes to the lead raft. Carter's BAR and the Bren gunner have been aiming for six Actions before the clock starts. That is the surprise rule: the Kachin begin with prepared fire; the Japanese do not get to shoot during Phase one at all.
 
 Bravo — forty hexes to the lead raft. Naw San's Thompsons on snap fire.
 
@@ -298,7 +306,7 @@ Three rafts enter from upstream. Twelve, ten, and eight men. Green troops, skill
 **VO:**  
 Two men represent the fight.
 
-Lieutenant Carter — OSS advisor. Skill Level five, Skill Accuracy Level eleven, five Combat Actions, Knockout Value thirty-five. Weapon: Bren Mk One. Pre-aimed six Actions. Bipod mounted behind jungle hard cover.
+Lieutenant Carter — OSS advisor. Skill Level five, Skill Accuracy Level eleven, five Combat Actions, Knockout Value thirty-five. Weapon: BAR A2. Pre-aimed six Actions. Bipod mounted behind jungle hard cover.
 
 Private Yamada — on the lead raft. Skill Level two, SAL seven, four Combat Actions, Knockout Value ten. Weapon: Arisaka Type ninety-nine. No cover. Standing on bamboo that someone else is about to shoot.
 
@@ -330,9 +338,13 @@ The ambush begins.
 `[ANIM: FR-051 Beat-ThompsonVolley — full combat layout. Tracer Bravo to Raft 1.]`
 
 **VO:**  
-Squad Bravo opens fire. Four Thompsons — we resolve one representative burst on screen; the other guns use the same EAL off-camera.
+Squad Bravo opens fire — three Thompsons and two M1 Carbines on the close bank. We resolve one representative Thompson burst on screen. The two carbines fire in the same Impulse off-camera; we do not roll them separately because this scenario uses one EAL per weapon type, not eighteen individual dice tracks.
+
+Why the Thompson for the on-screen roll? At forty hexes, a snap burst from Naw San's M1928A1 gives Effective Accuracy Level three and fifteen percent odds. The same snap shot with an M1 Carbine — semi-auto, no burst band — works out to EAL four and only three percent. The submachine gun is the right representative for a half-second volley. But when a carbine round does connect at this range, Phoenix Command says penetration five point eight and damage class five — harder hitting per shot than point-four-five ACP.
 
 Four Thompson M1928A1 submachine guns, snap burst, forty hexes — seventy-three meters — target Standing Exposed on a drifting raft. Naw San, Skill Accuracy Level eleven. One Action of aim. Kneeling and braced behind hard cover.
+
+`[ANIM: Optional subtitle on Beat-ThompsonVolley: "+ 2× M1 Carbine @ 40 hex (off-screen volley)".]`
 
 `[ANIM: EAL panel builds — Beat-ThompsonVolley / beat-01 from scenario.ts.]`
 
@@ -356,24 +368,24 @@ That is one Impulse. Three more remain in Phase one.
 
 ### SC-041 · 30:00 – 32:30 · BEAT 02
 
-`[ANIM: FR-052 Phase1Ambush — Bren hero shot. This is the thumbnail frame.]`
+`[ANIM: FR-052 Phase1Ambush — BAR hero shot. This is the thumbnail frame.]`
 
 **VO:**  
-Impulse Two. Alpha's Bren teams fire.
+Impulse Two. Alpha opens up — Carter's BAR and the Bren gunner in parallel. We resolve Carter on screen.
 
-This is the shot that defines the ambush. Lieutenant Carter, six Actions of aim, Bren Mk One on bipod, a hundred twenty hexes — two hundred twenty meters — burst fire at Standing Exposed targets on a raft that cannot duck.
+This is the shot that defines the ambush. Lieutenant Carter, six Actions of aim, BAR A2 on bipod, a hundred twenty hexes — two hundred twenty meters — burst fire at Standing Exposed targets on a raft that cannot duck.
 
 `[ANIM: EAL panel — beat-02. Each modifier narrated as it highlights.]`
 
-Aim Time at six Actions: minus six, plus Skill Accuracy Level eleven. Range ALM at a hundred twenty hexes — significant penalty, but the Bren was designed for exactly this. Bipod Mounted Weapon: plus three. Target burst elevation: plus fourteen. SAB minus three.
+Aim Time at six Actions: minus six, plus Skill Accuracy Level eleven. Range ALM at a hundred twenty hexes — significant penalty, but the BAR was built for exactly this. Bipod Mounted Weapon: plus three. Target burst elevation: plus fourteen. SAB minus four.
 
-Effective Accuracy Level thirteen. Odds of hitting: forty-seven percent.
+Effective Accuracy Level twelve. Odds of hitting: forty-three percent.
 
 `[ANIM: Dice roll — scripted 22. HIT. Damage panel: location, PD, PEN, DC.]`
 
-Roll twenty-two. Twenty-two is less than or equal to forty-seven — hit.
+Roll twenty-two. Twenty-two is less than or equal to forty-three — hit.
 
-Penetration thirteen. Damage class seven. Hit location roll forty-one. Physical Damage — read the panel. That soldier is not getting up.
+Penetration fifteen. Damage class seven. Hit location roll forty-one. Physical Damage — read the panel. That soldier is not getting up.
 
 Table Five-A distributes burst rounds across the raft cluster. Multiple hits. Multiple casualties.
 
@@ -407,7 +419,7 @@ Roll eighteen. Hit. The M1919 enfilades the river lane. Two to four casualties o
 `[ANIM: FR-054 scatter miss — roll 71, red MISS, splash.]`
 
 **VO:**  
-Impulse Four. Bravo's second volley at thirty-five hexes as the current drifts the raft closer. Effective Accuracy Level three. Odds: fifteen percent.
+Impulse Four. Bravo's second volley — Thompsons and carbines together — at thirty-five hexes as the current drifts the raft closer. We still resolve the Thompson representative burst. Effective Accuracy Level three. Odds: fifteen percent.
 
 Roll seventy-one. Seventy-one is greater than fifteen — miss. The rounds scatter into the river — Table Five-C — and the half-second is gone.
 
@@ -422,7 +434,7 @@ That is Phase One complete. Four Impulses. Two seconds of real time. The lead ra
 **VO:**  
 Phase Two. The Japanese may return fire.
 
-Private Yamada grabs his Arisaka. Hip fire from an unstable raft. Two hundred hexes to a muzzle flash he thinks is Alpha's Bren position. Four Actions of aim on a bolt-action that needed more time than he has. Target: Fire Over and Around — the Kachin are still largely concealed.
+Private Yamada grabs his Arisaka. Hip fire from an unstable raft. Two hundred hexes to a muzzle flash he thinks is Alpha's BAR position. Four Actions of aim on a bolt-action that needed more time than he has. Target: Fire Over and Around — the Kachin are still largely concealed.
 
 `[ANIM: EAL panel beat-05 — low odds.]`
 
@@ -460,7 +472,13 @@ The lead raft is sinking. Survivors throw rifles. The fight goes out of them the
 **VO:**  
 Phase Ten. Lieutenant Carter blows the whistle — standard OSS signal to break contact.
 
-Squad Delta opens covering fire — M1 Garand, six Actions of aim, a hundred eighty hexes. Effective Accuracy Level eight. Odds: seven percent. Roll six — hit — while Alpha and Bravo melt into jungle trails. The Kachin ignore difficult terrain on withdrawal. Japanese survivors on Raft Three paddle for the far bank and do not pursue.
+Squad Delta opens covering fire — three M1 Carbines on the flank, one Thompson in trail. We resolve one carbine shot on screen: six Actions of aim, a hundred eighty hexes, long range for a thirty-carbine round. Effective Accuracy Level nine. Odds: nine percent.
+
+Roll six — hit. At a hundred eighty hexes that is penetration two point four and damage class two — not the slaughter of Phase One, but enough to make the survivors on Raft Three keep their heads down. That is why they do not pursue into the jungle.
+
+`[ANIM: Optional subtitle on Beat-Withdrawal: "Delta: 3× M1 Carbine covering fire".]`
+
+Alpha and Bravo melt into jungle trails. The Kachin ignore difficult terrain on withdrawal. Japanese survivors paddle for the far bank and do not follow.
 
 `[ANIM: FR-059 casualty tracker final: 24/30 Japanese, 2/3 rafts sunk.]`
 
@@ -496,7 +514,7 @@ Phoenix Command told us what history already knew: this fight was never fair. Co
 **VO:**  
 Detachment 101 and the Kachin Rangers conducted dozens of operations like this across northern Burma. They did not win the war alone — Merrill's Marauders, the Chinese divisions, the RAF and USAAF, and Stilwell's stubborn logistics did that. But they made every mile of the Irrawaddy cost blood.
 
-If you want to run this yourself, the scenario PDF and Phoenix Command rules are linked below. The phoenix-functions code implements every table. Scale down the headcount, compress the river, pre-aim your Bren teams, and give the Japanese one Phase of surprise shock.
+If you want to run this yourself, the scenario PDF and Phoenix Command rules are linked below. The phoenix-functions code implements every table. Scale down the headcount, compress the river, pre-aim your BAR and Bren teams, and give the Japanese one Phase of surprise shock.
 
 `[ANIM: End card — title, GitHub link, subscribe.]`
 

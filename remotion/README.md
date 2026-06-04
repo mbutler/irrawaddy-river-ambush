@@ -30,7 +30,7 @@ Open Remotion Studio to preview compositions. Export with `npm run render:intro`
 | `PhoenixPrimer` | `compositions/HistoricalMap.tsx` | Phase/Impulse/EAL steps |
 | `TacticalSetup` | `compositions/HistoricalMap.tsx` | Pre-ambush map state |
 | `Beat-ThompsonVolley` | `compositions/CombatBeats.tsx` | beat-01 |
-| `Phase1Ambush` | `compositions/CombatBeats.tsx` | beat-02 Bren |
+| `Phase1Ambush` | `compositions/CombatBeats.tsx` | beat-02 BAR A2 |
 | `Beat-M1919` | `compositions/CombatBeats.tsx` | beat-03 |
 | `Phase2ReturnFire` | `compositions/CombatBeats.tsx` | beat-05 Yamada |
 | `Beat-Withdrawal` | `compositions/CombatBeats.tsx` | beat-08 |

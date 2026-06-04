@@ -26,8 +26,8 @@ Historically the river is 800–1500 m wide. The motion-graphics map compresses 
 | Map element | Hex value | Real-world note |
 |-------------|-----------|-----------------|
 | River width (frame) | 35 hexes | ~64 m shown; narrate full width historically |
-| Bravo to lead raft | 40 hexes | ~73 m — Thompson sweet spot |
-| Alpha to lead raft | 120 hexes | ~220 m — Bren effective |
+| Bravo to lead raft | 40 hexes | ~73 m — Thompson / M1 Carbine sweet spot |
+| Alpha to lead raft | 120 hexes | ~220 m — BAR / Bren effective |
 | Charlie M1919 | 200 hexes | ~366 m — long enfilade |
 | Raft drift | 0.5 hex/Impulse | ~2–3 knots downstream |
 
@@ -42,14 +42,16 @@ Historically the river is 800–1500 m wide. The motion-graphics map compresses 
 
 | Squad | Leader | Personnel | Skill | Key weapons |
 |-------|--------|-----------|-------|-------------|
-| **Alpha** | Lt. James Carter (OSS) | 5 | SL 5 (Crack) | 2× Bren Mk1, 3× Thompson |
-| **Bravo** | Naw San | 5 | SL 4–5 | 5× Thompson M1928A1 |
-| **Charlie** | MG section | 5 | SL 4 | M1919 A6, Thompsons |
-| **Delta** | Flank/withdrawal | 4 | SL 4 | Garands, Thompsons |
+| **Alpha** | Lt. James Carter (OSS) | 5 | SL 5 (Crack) | 1× BAR A2, 1× Bren Mk1, 2× M1 Carbine, 1× Thompson |
+| **Bravo** | Naw San | 5 | SL 4–5 | 3× Thompson M1928A1, 2× M1 Carbine |
+| **Charlie** | MG section | 5 | SL 4 | M1919 A6, BAR A2, Bren Mk1, Thompson, M1 Carbine |
+| **Delta** | Flank/withdrawal | 4 | SL 4 | 3× M1 Carbine, 1× Thompson |
+
+**Research note:** OSS air-drop and Det 101 histories document Thompsons, Brens, and M1919s; recent research also places **M1918A2 BAR** and **M1 Carbine** in guerrilla hands during the Myitkyina campaign. This OOB keeps the earlier weapons and adds BAR/carbine in plausible squad proportions.
 
 **Pregenerated stats (Crack example — Carter):**
 - SL 5 → SAL 11, CA 6, KV 35 (WIL 14)
-- Encumbrance ~35 lb (Bren + kit)
+- Encumbrance ~40 lb (BAR A2 + kit)
 
 **Pregenerated stats (Green Japanese example — Yamada):**
 - SL 2 → SAL 7, CA 4, KV 10 (WIL 10)
@@ -65,7 +67,7 @@ Historically the river is 800–1500 m wide. The motion-graphics map compresses 
 **Raft properties:**
 - Armor PF: 0 (open)
 - Cover: none — `Standing Exposed` for burst elevation
-- Hit points (scenario rule): 1 HP small arms sustained / 2 HP cumulative; Bren or M1919 instant sink (narrative)
+- Hit points (scenario rule): 1 HP small arms sustained / 2 HP cumulative; Bren, BAR, or M1919 instant sink (narrative)
 
 ---
 
@@ -74,9 +76,11 @@ Historically the river is 800–1500 m wide. The motion-graphics map compresses 
 | Scenario weapon | PC entry | @ engagement range | PEN | DC |
 |-----------------|----------|-------------------|-----|-----|
 | M1A1 Thompson | Thompson M1928A1 | 40 hex | 1.3 | 2 |
+| M1 Carbine | M1 Carbine | 40 hex | 5.8 | 5 |
+| M1 Carbine (withdrawal) | M1 Carbine | 180 hex | 2.4 | 2 |
+| BAR M1918A2 | BAR A2 | 120 hex | 15 | 7 |
 | Bren Mk I | Bren Mk1 | 120 hex | 13 | 7 |
 | M1919 LMG | M1919 A6 | 200 hex | 13 | 7 |
-| M1 Garand | M1 Garand | 100 hex | 15 | 7 |
 | Type 99 rifle | Arisaka Type 99 | 200 hex | 15 | 7 |
 | Type 96/99 LMG | Bren Mk1 (proxy) | 130 hex | 13 | 7 |
 
@@ -128,8 +132,8 @@ Full weapon data: `src/weapons.js`
 | ISF | 23 |
 | CA | 5 (2-1-1-1 per impulse) |
 | KV | 35 |
-| Weapon | Bren Mk1 |
-| Encumbrance | 35 |
+| Weapon | BAR A2 |
+| Encumbrance | 40 |
 
 ### Naw San — k-03
 
@@ -164,7 +168,7 @@ Each beat matches `COMBAT_BEATS` in `scenario.ts`. Values below are computed at 
 ---
 
 ### BEAT 01 — Phase 1, Impulse 1  
-**Bravo — Thompson Snap Burst vs Raft 1**
+**Bravo — Thompson Snap Burst vs Raft 1** (on-screen representative)
 
 | Parameter | Value |
 |-----------|-------|
@@ -175,30 +179,33 @@ Each beat matches `COMBAT_BEATS` in `scenario.ts`. Values below are computed at 
 | Target | Standing Exposed, raft moving 0.5 hex/Imp |
 | Visibility | Good |
 
-**Computed:** EAL 3, odds 15%  
+**Bravo fires this Impulse:** 3× Thompson M1928A1 + 2× M1 Carbine (OOB). Only the Thompson is rolled on screen.
+
+**Computed (on-screen):** EAL 3, odds 15%  
 
 **Scripted roll:** 12 → **HIT** (EAL 3, odds 15%)  
-**Damage @ 40 hex:** PEN 1.3, DC 2  
-**Notes:** Representative burst for 4× Thompson volley; raft instability check d6 ≥4
+**Damage @ 40 hex:** PEN 1.3, DC 2 (Thompson)  
+**Off-screen comparison @ 40 hex (not rolled):** M1 Carbine snap single shot → EAL 4, odds 3%; if hit → PEN 5.8, DC 5. Use Thompson as rep because burst fire dominates the half-second volley.  
+**Notes:** Narrate parallel carbine fire; optional UI label `+ 2× M1 Carbine @ 40 hex`. Raft instability check d6 ≥4.
 
 ---
 
 ### BEAT 02 — Phase 1, Impulse 2  
-**Alpha — Bren 6-Action Burst vs Raft 1** ⭐ Hero shot
+**Alpha — BAR 6-Action Burst vs Raft 1** ⭐ Hero shot
 
 | Parameter | Value |
 |-----------|-------|
 | Shooter | Lt. Carter (SAL 11) |
-| Weapon | Bren Mk1, 6 Actions, Burst |
+| Weapon | BAR A2, 6 Actions, Burst |
 | Range | 120 hex (220 m) |
 | Situation | Bipod Mounted Weapon (+3) |
 | Target | Standing Exposed |
 
-**Computed:** EAL 13, odds 47%  
+**Computed:** EAL 12, odds 43%  
 
-**Scripted roll:** 22 → **HIT** (EAL 13, odds 47%)  
-**Damage @ 120 hex:** PEN 13, DC 7 — lethal hits  
-**Notes:** Table 5A burst distribution; primary Remotion composition `Phase1Ambush`
+**Scripted roll:** 22 → **HIT** (EAL 12, odds 43%)  
+**Damage @ 120 hex:** PEN 15, DC 7 — lethal hits  
+**Notes:** Table 5A burst distribution; primary Remotion composition `Phase1Ambush`. Alpha Bren gunner fires parallel volley off-screen (same EAL band @ 120 hex).
 
 ---
 
@@ -221,9 +228,10 @@ Each beat matches `COMBAT_BEATS` in `scenario.ts`. Values below are computed at 
 ---
 
 ### BEAT 04 — Phase 1, Impulse 4  
-**Bravo — Second Thompson volley**
+**Bravo — Second volley** (Thompson representative)
 
 | Range | 35 hex (drifted closer) |
+| Off-screen | 3× Thompson + 2× Carbine again; same rep weapon |
 | EAL / odds | 3 / 15% |
 | Scripted roll | 71 → **MISS** — show scatter into water |
 
@@ -261,14 +269,17 @@ Each beat matches `COMBAT_BEATS` in `scenario.ts`. Values below are computed at 
 ---
 
 ### BEAT 08 — Phase 10, Impulse 1  
-**Delta covering fire — withdrawal**
+**Delta covering fire — withdrawal** (on-screen representative)
 
-| Shooter | Flank Guard (Garand) |
-| Weapon | M1 Garand, 6 Actions, Single Shot |
+| Shooter | Flank Guard 1 (SAL 10) |
+| **Delta fires:** | 3× M1 Carbine + 1× Thompson (OOB); carbine shot shown on screen |
+| Weapon | M1 Carbine, 6 Actions, Single Shot |
 | Range | 180 hex vs Raft 3 |
-| EAL / odds | 8 / 7% |
+| EAL / odds | 9 / 9% |
 | Roll | 6 → **HIT** |
-| Narrative | Whistle signal; squads fade into jungle; engagement ends |
+| Damage @ 180 hex | PEN 2.4, DC 2 — suppresses pursuit, not Phase-1 lethal |
+| Narrative | OSS whistle; Delta carbines keep Raft 3 heads down; Alpha/Bravo withdraw; engagement ends |
+| **UI** | Optional label `Delta: 3× M1 Carbine covering fire` on `Beat-Withdrawal` |
 
 ---
 
@@ -292,11 +303,11 @@ For squads firing together, resolve **one representative EAL** per weapon type, 
 
 | Volley | Rep weapon | Targets | Narrative casualties |
 |--------|------------|---------|-------------------|
-| Bravo 4× Thompson | 1 EAL @ 40 hex | Raft 1 | 3–5 KIA |
-| Alpha 2× Bren | 1 EAL @ 120 hex | Raft 1 | 4–6 KIA |
+| Bravo 3× Thompson + 2× Carbine | 1 EAL @ 40 hex (Thompson rep; carbines narrated off-screen) | Raft 1 | 3–5 KIA |
+| Alpha BAR + Bren | 1 EAL @ 120 hex (BAR rep on-screen) | Raft 1 | 4–6 KIA |
 | Charlie M1919 | 1 EAL @ 200 hex | Raft 2 | 2–4 KIA |
 
-Do not roll individually for all 18 Kachin — state aggregate on VO, show one representative dice roll on screen.
+Do not roll individually for all 18 Kachin — state aggregate on VO, show one representative dice roll on screen. **Exception for narration:** Bravo and Delta name all weapons firing; only the representative weapon gets a dice animation (Thompson @ 40 hex, BAR @ 120 hex, M1919 @ 200 hex, M1 Carbine @ 180 hex on withdrawal).
 
 ---
 
@@ -307,7 +318,9 @@ Do not roll individually for all 18 Kachin — state aggregate on VO, show one r
 - history.army.mil — Merrill's Marauders  
 - Wikipedia — Burma Campaign 1944–45, OSS Detachment 101  
 
-**Research gaps (acknowledge in VO):** Exact ambush coordinates unknown; Kachin grenade use unconfirmed; raft specs estimated.
+**Research gaps (acknowledge in VO):** Exact ambush coordinates unknown; per-squad BAR vs Bren allocation unconfirmed; Kachin grenade use unconfirmed; raft specs estimated.
+
+**Research update (2026):** BAR A2 and M1 Carbine added to Kachin loadout per OSS supply patterns and campaign-period small-arms distribution studies.
 
 ---
 

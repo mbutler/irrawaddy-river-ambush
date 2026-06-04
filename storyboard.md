@@ -47,15 +47,19 @@ Frame-by-frame shot list. **Total runtime: ~42:30**
 | SB-055 | 4:59 | 8s | — | ForcesInfographic | hybrid | Hold Bren | VO |
 | SB-058 | 5:07 | 8s | FR-023 | ForcesInfographic | hybrid | M1919 card | VO |
 | SB-059 | 5:15 | 8s | — | ForcesInfographic | hybrid | Hold M1919 | VO |
-| SB-062 | 5:23 | 8s | FR-024 | ForcesInfographic | hybrid | Arisaka card | VO |
-| SB-063 | 5:31 | 10s | — | ForcesInfographic | hybrid | Hold Arisaka | VO |
-| SB-066 | 5:41 | 12s | FR-025 | ForcesInfographic | hybrid | Loadout donut chart | VO |
-| SB-067 | 5:53 | 17s | — | ForcesInfographic | hybrid | Hold chart | VO |
-| SB-070 | 6:10 | 15s | FR-026 | — | hybrid | Raft cross-section zero cover | VO SC-012 |
-| SB-071 | 6:25 | 15s | FR-027 | — | hybrid | Terrain cross-section rain | VO |
+| SB-060 | 5:23 | 8s | FR-024 | ForcesInfographic | hybrid | BAR A2 card | VO |
+| SB-061 | 5:31 | 8s | — | ForcesInfographic | hybrid | Hold BAR | VO |
+| SB-062 | 5:39 | 8s | FR-025 | ForcesInfographic | hybrid | M1 Carbine card | VO |
+| SB-063 | 5:47 | 10s | — | ForcesInfographic | hybrid | Hold Carbine | VO |
+| SB-064 | 5:57 | 8s | FR-026 | ForcesInfographic | hybrid | Arisaka card | VO |
+| SB-065 | 6:05 | 8s | — | ForcesInfographic | hybrid | Hold Arisaka | VO |
+| SB-066 | 6:13 | 12s | FR-027 | ForcesInfographic | hybrid | Loadout donut chart | VO |
+| SB-067 | 6:25 | 17s | — | ForcesInfographic | hybrid | Hold chart | VO |
+| SB-070 | 6:42 | 15s | FR-028 | — | hybrid | Raft cross-section zero cover | VO SC-012 |
+| SB-071 | 6:57 | 15s | FR-029 | — | hybrid | Terrain cross-section rain | VO |
 | SB-072 | 6:40 | 20s | — | — | hybrid | Range band annotations | VO |
 | SB-073 | 7:00 | 30s | — | — | hybrid | Map compression disclaimer text | VO |
-| SB-074 | 7:30 | 30s | FR-027 | — | hybrid | Hold terrain VO monsoon | VO |
+| SB-074 | 7:30 | 30s | FR-029 | — | hybrid | Hold terrain VO monsoon | VO |
 | SB-075 | 8:00 | 60s | — | — | hybrid | Victory conditions card build | VO SC-013 |
 | SB-076 | 9:00 | 60s | — | — | hybrid | Hold victory + favor ambusher text | VO |
 | SB-077 | 10:00 | 60s | — | — | hybrid | Research sources scroll (optional) | VO |
@@ -115,11 +119,11 @@ Frame-by-frame shot list. **Total runtime: ~42:30**
 
 | ID | Time In | Dur | Frame | Comp | Layer | Description | Audio |
 |----|---------|-----|-------|------|-------|-------------|-------|
-| SB-145 | 28:00 | 90s | FR-051 | Beat-ThompsonVolley | simulation | BEAT 01 full layout tracer+dice | VO SC-040 |
+| SB-145 | 28:00 | 90s | FR-051 | Beat-ThompsonVolley | simulation | BEAT 01 tracer+dice; optional `+2× M1 Carbine` label | VO SC-040 |
 | SB-146 | 28:00 | — | — | Beat-ThompsonVolley | simulation | EAL panel beat-01 | VO modifiers |
 | SB-147 | 28:45 | — | — | Beat-ThompsonVolley | simulation | Dice 34 HIT | SFX |
 | SB-148 | 29:15 | — | — | Beat-ThompsonVolley | simulation | Casualties 3/12 + splash | VO |
-| SB-152 | 29:30 | 120s | FR-052 | Phase1Ambush | simulation | BEAT 02 Bren hero — THUMBNAIL | VO SC-041 |
+| SB-152 | 29:30 | 120s | FR-052 | Phase1Ambush | simulation | BEAT 02 BAR hero — THUMBNAIL | VO SC-041 |
 | SB-153 | 30:00 | — | — | Phase1Ambush | simulation | EAL stack narrated line by line | VO |
 | SB-154 | 30:45 | — | — | Phase1Ambush | simulation | Dice 22 HIT | SFX |
 | SB-155 | 31:15 | — | — | Phase1Ambush | simulation | Damage panel PD location | VO |
@@ -135,7 +139,7 @@ Frame-by-frame shot list. **Total runtime: ~42:30**
 | SB-178 | 36:00 | 60s | FR-056 | — | simulation | BEAT 06 LMG duel split | VO |
 | SB-182 | 37:00 | 90s | FR-057 | — | simulation | BEAT 07 KV fail PANIC | VO SC-045 |
 | SB-183 | 37:30 | — | — | — | simulation | Raft 1 SINKING | VO |
-| SB-185 | 38:30 | 90s | FR-058 | Beat-Withdrawal | simulation | BEAT 08 withdrawal | VO SC-046 |
+| SB-185 | 38:30 | 90s | FR-058 | Beat-Withdrawal | simulation | BEAT 08; optional `3× M1 Carbine` label | VO SC-046 |
 | SB-186 | 39:00 | — | — | Beat-Withdrawal | simulation | Whistle + squad fade | SFX |
 | SB-188 | 39:30 | 30s | FR-059 | — | simulation | Casualty tracker final | VO tally |
 

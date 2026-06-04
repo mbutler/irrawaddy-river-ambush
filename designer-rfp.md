@@ -77,7 +77,7 @@ These replace the worst placeholder art and appear repeatedly on screen.
 | **TOKENS** | Unit token library | `RaftToken` (normal / active / sinking), `SquadToken` (hidden / active / firing), troop count badge, LMG dot indicator | SVG components, 56×24 raft, 28–32px squad |
 | **FR-010** | CBI theater map base | Northern Burma / Irrawaddy context — stylized, not Google Maps screenshot. Coastline + river path as editable strokes | SVG: `land`, `river`, `labels` |
 | **FR-011–014** | Map overlay layers | Separate files or Figma variants: Stilwell arrow (amber), Japanese retreat route (crimson dashed), OSS zones (green fill 20%), Myitkyina marker + callout | SVG layers toggled in edit/Remotion |
-| **FR-021–024** | Weapon card **templates** | Allied (×3) + Japanese (×1). Layout per `style-guide.md` §5.5. **Leave stat areas as editable text** or provide sample + separate text layer — stats must remain updatable | Figma component + SVG/PNG export |
+| **FR-021–026** | Weapon card **templates** | Allied (×5) + Japanese (×1): Thompson, Bren, M1919, BAR A2, M1 Carbine, Arisaka. Layout per `style-guide.md` §5.5. **Leave stat areas as editable text** or provide sample + separate text layer — stats must remain updatable | Figma component + SVG/PNG export |
 | **FR-041–042** | Character card **templates** | Carter (allied) + Yamada (japanese). Stat slots: SL, SAL, CA, KV + CA per impulse I1–I4 | Figma component + export |
 
 **Tier 1 deliverable count:** ~12 frame groups + token library
@@ -90,9 +90,9 @@ These replace the worst placeholder art and appear repeatedly on screen.
 |----|-------|-------------|
 | **FR-002** | Title card layout | Typography spec only OR static comp — client may animate in Remotion |
 | **FR-020** | Order of battle split | Kachin 4 squads / 18 fighters vs Japanese 3 rafts / 30 troops |
-| **FR-025** | Loadout donut | 60% SMG / 25% Bren / 10% M1919 / 5% other — segment colors in spec |
-| **FR-026** | Raft cross-section | Bamboo raft, 12 troop silhouettes, `COVER: 0` callout |
-| **FR-027** | Terrain cross-section | Bank hard cover \| river \| far bank + monsoon rain overlay layer |
+| **FR-027** | Loadout donut | 28% Thompson / 44% M1 Carbine / 11% Bren / 11% BAR / 6% M1919 — segment colors in `frames.md` |
+| **FR-028** | Raft cross-section | Bamboo raft, 12 troop silhouettes, `COVER: 0` callout |
+| **FR-029** | Terrain cross-section | Bank hard cover \| river \| far bank + monsoon rain overlay layer |
 | **FR-043** | Range bands overlay | Close / medium / long hex bands for tactical map; weapon sweet-spot labels |
 | **FR-044** | Surprise rule card | `SPECIAL RULE: SURPRISE` — Japanese hold fire Phase 1; Kachin 6 Actions pre-aimed |
 | **FR-059** | Casualty tracker HUD | Persistent bar: Kachin losses, Japanese 24/30, rafts 2 sunk |
@@ -141,7 +141,7 @@ Many frames show **numbers that change per combat beat**. Designer delivers **la
 | Beat | Weapon | EAL | Odds | Roll | Result |
 |------|--------|-----|------|------|--------|
 | 01 | Thompson @ 40 hex | 3 | 15% | 12 | HIT |
-| 02 | Bren @ 120 hex | 13 | 47% | 22 | HIT |
+| 02 | BAR A2 @ 120 hex | 12 | 43% | 22 | HIT |
 | 03 | M1919 @ 200 hex | 7 | 24% | 18 | HIT |
 | 04 | Thompson @ 35 hex | 3 | 15% | 71 | MISS |
 | 05 | Arisaka @ 200 hex | −10 | 0% | 78 | MISS |

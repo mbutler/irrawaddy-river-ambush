@@ -27,16 +27,16 @@ export const MAP = {
 // ─── Characters ──────────────────────────────────────────────────────────────
 
 export const KACHIN: CharacterStats[] = [
-  buildCharacter('k-01', 'Lt. James Carter (OSS)', 'kachin', 5, 14, 12, 11, 13, 35, 'Bren Mk1', 'Squad Alpha CO / Bren'),
+  buildCharacter('k-01', 'Lt. James Carter (OSS)', 'kachin', 5, 14, 12, 11, 13, 35, 'BAR A2', 'Squad Alpha CO / BAR'),
   buildCharacter('k-02', 'Kachin Bren Gunner A', 'kachin', 5, 13, 13, 11, 12, 35, 'Bren Mk1', 'Squad Alpha Bren'),
   buildCharacter('k-03', 'Naw San', 'kachin', 5, 14, 12, 12, 12, 30, 'Thompson M1928A1', 'Squad Bravo leader'),
   buildCharacter('k-04', 'Kachin SMG 1', 'kachin', 4, 12, 11, 12, 11, 30, 'Thompson M1928A1', 'Squad Bravo'),
   buildCharacter('k-05', 'Kachin SMG 2', 'kachin', 4, 12, 11, 12, 11, 30, 'Thompson M1928A1', 'Squad Bravo'),
-  buildCharacter('k-06', 'Kachin SMG 3', 'kachin', 4, 12, 11, 12, 11, 30, 'Thompson M1928A1', 'Squad Bravo'),
-  buildCharacter('k-07', 'Kachin SMG 4', 'kachin', 4, 12, 11, 12, 11, 30, 'Thompson M1928A1', 'Squad Bravo'),
+  buildCharacter('k-06', 'Kachin Carbine 1', 'kachin', 4, 12, 11, 12, 11, 30, 'M1 Carbine', 'Squad Bravo'),
+  buildCharacter('k-07', 'Kachin Carbine 2', 'kachin', 4, 12, 11, 12, 11, 30, 'M1 Carbine', 'Squad Bravo'),
   buildCharacter('k-08', 'MG Gunner Chen', 'kachin', 4, 13, 14, 10, 11, 45, 'M1919 A6', 'Squad Charlie M1919'),
-  buildCharacter('k-09', 'Kachin AG', 'kachin', 4, 12, 13, 11, 11, 35, 'Thompson M1928A1', 'Squad Charlie assistant'),
-  buildCharacter('k-10', 'Flank Guard 1', 'kachin', 4, 12, 11, 12, 11, 30, 'M1 Garand', 'Squad Delta'),
+  buildCharacter('k-09', 'Kachin BAR 2', 'kachin', 4, 12, 13, 11, 11, 35, 'BAR A2', 'Squad Charlie BAR'),
+  buildCharacter('k-10', 'Flank Guard 1', 'kachin', 4, 12, 11, 12, 11, 30, 'M1 Carbine', 'Squad Delta / withdrawal'),
 ];
 
 export const JAPANESE: CharacterStats[] = [
@@ -148,7 +148,7 @@ export const COMBAT_BEATS: CombatBeat[] = [
     1,
     1,
     'Bravo — Thompson Snap Burst',
-    'Squad Bravo opens on the lead raft at forty hexes — seventy-three meters. Four Thompsons, snap burst from jungle cover.',
+    'Squad Bravo opens on the lead raft at forty hexes — three Thompsons and two M1 Carbines. Representative Thompson snap burst on screen; carbines fire off-screen same Impulse.',
     'k-03',
     'raft-1',
     'Thompson M1928A1',
@@ -166,17 +166,17 @@ export const COMBAT_BEATS: CombatBeat[] = [
     },
     12,
     67,
-    ['HIT at 15% (roll 12 ≤ odds). EAL 3. DC 2 at 40 hex. Rep burst for 4× Thompson volley.', 'Raft instability check: 50% — roll d6 ≥4 → 2 troops in water.']
+    ['HIT at 15% (roll 12 ≤ odds). EAL 3. DC 2 at 40 hex. Rep burst for 3× Thompson volley.', 'Off-screen: 2× M1 Carbine @ 40 hex (EAL 4 / 3% if rolled — not shown).', 'Raft instability check: 50% — roll d6 ≥4 → 2 troops in water.']
   ),
   beat(
     'beat-02',
     1,
     2,
-    'Alpha — Bren Six-Action Burst',
-    'Alpha Bren teams pre-aimed six Actions. Bipod mounted, hard cover on the bank. One hundred twenty hexes to Raft 1.',
+    'Alpha — BAR Six-Action Burst',
+    'Carter\'s BAR team pre-aimed six Actions. Bipod mounted, hard cover on the bank. One hundred twenty hexes to Raft 1. Alpha Bren fires in parallel off-screen.',
     'k-01',
     'raft-1',
-    'Bren Mk1',
+    'BAR A2',
     6,
     120,
     {
@@ -191,7 +191,7 @@ export const COMBAT_BEATS: CombatBeat[] = [
     },
     22,
     41,
-    ['Hit. PEN 13 DC 7 @ 120 hex. Lethal.', 'Table 5A: distribute burst rounds across raft cluster.']
+    ['Hit. PEN 15 DC 7 @ 120 hex. Lethal.', 'Table 5A: distribute burst rounds across raft cluster. Parallel Alpha Bren volley off-screen.']
   ),
   beat(
     'beat-03',
@@ -325,10 +325,10 @@ export const COMBAT_BEATS: CombatBeat[] = [
     10,
     1,
     'Kachin Withdrawal',
-    'Phase ten. Whistle signal. Delta covers with M1 Garand — six Actions aim, one hundred eighty hexes.',
+    'Phase ten. Whistle signal. Delta covers with three M1 Carbines — representative shot at one hundred eighty hexes.',
     'k-10',
     'raft-3',
-    'M1 Garand',
+    'M1 Carbine',
     6,
     180,
     {
@@ -343,7 +343,7 @@ export const COMBAT_BEATS: CombatBeat[] = [
     },
     6,
     33,
-    ['HIT at 7% (roll 6 ≤ odds). EAL 8 @ 180 hex, 6 Actions aim. Engagement ends.']
+    ['HIT at 9% (roll 6 ≤ odds). EAL 9 @ 180 hex, 6 Actions aim. PEN 2.4 DC 2 — suppresses Raft 3 pursuit.', 'Delta: 3× M1 Carbine + 1× Thompson off-screen; engagement ends.']
   ),
 ];
 
