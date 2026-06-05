@@ -341,7 +341,7 @@ PD 56 vs KV 35, roll 18, FAIL state.
 ### FR-040 · Tactical Map — Initial State
 **Storyboard:** SB-121  
 
-Full `TacticalMap`: 3 rafts upstream, 4 squad tokens hidden (50% opacity), current arrows.
+Full `TacticalMap`: `river-graphic.png` background, 3 `boat.png` rafts on `RIVER_PATH`, 4 squad tokens on near bank. Phoenix Command hex ranges in HUD — not pixel-measured from artwork.
 
 ---
 
@@ -530,6 +530,7 @@ High contrast, readable at 120px height.
 - [ ] All frames use color tokens from style-guide.md  
 - [ ] All combat numbers verified against `scenario.ts`  
 - [ ] Font files embedded or documented  
-- [ ] SVG map asset replaced from placeholder  
+- [x] Tactical map artwork (`river-graphic.png`, `boat.png`, `mapLayout.ts`)  
+- [ ] CBI theater SVG replaced from placeholder (`HistoricalMap.tsx`)  
 - [ ] Archival photos licensed / public domain verified  
 - [ ] No emoji in final renders (icons only)

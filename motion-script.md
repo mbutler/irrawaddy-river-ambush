@@ -6,6 +6,10 @@
 
 Composition IDs in `[ANIM:]` match Remotion exports in `remotion/`.
 
+### Production note (full VO + rough cut)
+
+This script is **record-ready** as a single pass. Lay the full VO in your NLE first, then swap Remotion exports section by section. Phoenix Command numbers (EAL, odds, rolls, PEN/DC) match `scenario.ts` and `node scripts/log-beats.mjs`. Tactical map visuals use `river-graphic.png` and `boat.png`; narration hex ranges describe the **abstract kill zone**, not literal pixels on the artwork.
+
 ---
 
 ## ACT 1 — COLD OPEN (0:00 – 4:30)
@@ -164,7 +168,7 @@ The terrain is the Kachin Rangers' greatest weapon.
 
 The near bank: steep muddy slopes one to two meters high, dense teak and bamboo, hard cover for shooters using Fire Over and Around rules. The Kachin start hidden. The Japanese cannot target what they cannot see.
 
-The river: historically eight hundred to fifteen hundred meters wide at the Myitkyina section during monsoon flood. Our map compresses that to a readable engagement zone — about a hundred forty meters of open water in frame — because at literal scale you would need a gymnasium floor to play Phoenix Command and you would never see the miniatures. The narration tells the truth; the map shows the kill zone.
+The river: historically eight hundred to fifteen hundred meters wide at the Myitkyina section during monsoon flood. Our on-screen map uses a painted Irrawaddy channel — beautiful, but still a **compressed kill zone** for Phoenix Command, not a one-to-one survey. Simulation ranges — forty hexes, a hundred twenty hexes — are the truth for the dice; the artwork shows where the ambush sits on the water. The narration tells the history; the map shows the fight we can resolve shot by shot.
 
 `[ANIM: Monsoon rain overlay. Visibility band beyond 200 hex dims.]`
 
@@ -342,7 +346,7 @@ Squad Bravo opens fire — three Thompsons and two M1 Carbines on the close bank
 
 Why the Thompson for the on-screen roll? At forty hexes, a snap burst from Naw San's M1928A1 gives Effective Accuracy Level three and fifteen percent odds. The same snap shot with an M1 Carbine — semi-auto, no burst band — works out to EAL four and only three percent. The submachine gun is the right representative for a half-second volley. But when a carbine round does connect at this range, Phoenix Command says penetration five point eight and damage class five — harder hitting per shot than point-four-five ACP.
 
-Four Thompson M1928A1 submachine guns, snap burst, forty hexes — seventy-three meters — target Standing Exposed on a drifting raft. Naw San, Skill Accuracy Level eleven. One Action of aim. Kneeling and braced behind hard cover.
+One representative Thompson M1928A1 snap burst — standing in for Naw San's three-gun SMG section — forty hexes, seventy-three meters, target Standing Exposed on a drifting raft. Skill Accuracy Level eleven. One Action of aim. Kneeling and braced behind hard cover.
 
 `[ANIM: Optional subtitle on Beat-ThompsonVolley: "+ 2× M1 Carbine @ 40 hex (off-screen volley)".]`
 
@@ -527,6 +531,10 @@ And remember — on the Irrawaddy in July nineteen forty-four, the river belonge
 ---
 
 ## APPENDIX — ALT READS & PICKUP LINES
+
+Use after the rough cut when drilling into individual sections:
+
+- **Rough-cut workflow:** Record full script once → assemble in NLE → mark weak acts → re-record only those SC-### blocks → re-render matching Remotion comps from `remotion/out/`.
 
 Use if re-recording sections:
 

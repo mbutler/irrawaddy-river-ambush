@@ -34,6 +34,19 @@ Historically the river is 800–1500 m wide. The motion-graphics map compresses 
 **On-screen disclaimer (Hybrid mode):**  
 *"Map shows the engagement zone where rafts entered effective range. Historically, up to a kilometer of open water exposed them."*
 
+### Visual map (Remotion)
+
+Tactical compositions use artwork, not the abstract SVG bands:
+
+| Asset | Role |
+|-------|------|
+| `river-graphic.png` | Map background in `TacticalMap` |
+| `boat.png` | Raft sprite; scaled and rotated along `RIVER_PATH` |
+| `remotion/src/data/mapLayout.ts` | Squad positions, river waypoints, raft `pathStart`, drift rates |
+| `remotion/public/calibrate-river-path.html` | Browser tool to trace and export `RIVER_PATH` |
+
+**Important:** Hex ranges in this document and in VO are **Phoenix Command simulation distances**. Boat motion follows the artwork path for presentation; it does not change EAL math in `scenario.ts`.
+
 ---
 
 ## 3. Order of Battle

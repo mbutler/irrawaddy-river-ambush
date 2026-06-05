@@ -15,11 +15,37 @@ Complete production assets for a YouTube documentary/playthrough of the July 194
 
 ## Recommended Workflow
 
-1. **Read** `scenario-pc.md` — understand forces, scale, and pre-scripted combat beats.
-2. **Design** static frames in Figma using `style-guide.md` + `frames.md` as specs.
-3. **Record** voiceover from `motion-script.md` (or record section-by-section aligned to storyboard).
-4. **Animate** in Remotion (`cd remotion && npm install && npm start`) — compositions match storyboard IDs.
-5. **Composite** in your NLE (DaVinci, Premiere) — VO bed + Remotion exports + archival B-roll.
+### Primary path (full VO + rough cut)
+
+1. **Read** `scenario-pc.md` — forces, scale, pre-scripted combat beats.
+2. **Record** the full voiceover from `motion-script.md` (~42 min). Numbers and beats are verified against `scenario.ts`.
+3. **Rough edit** in your NLE — lay VO bed first, drop in Remotion exports and placeholders where needed.
+4. **Drill down** — re-record VO pickups, re-render individual compositions, swap sections as you refine.
+5. **Animate** in Remotion (`cd remotion && npm start`) — preview compositions; export with scripts below.
+
+**Act boundaries** (for drilling into sections after the rough cut):
+
+| Act | Time | Content |
+|-----|------|---------|
+| 1 | 0:00–4:30 | Cold open |
+| 2 | 4:30–16:00 | Scenario, forces, weapons |
+| 3 | 16:00–22:30 | Phoenix Command primer |
+| 4 | 22:30–28:00 | Tactical setup |
+| 5 | 28:00–40:00 | Playthrough (8 beats) |
+| 6 | 40:00–42:30 | Outcome & epilogue |
+
+Vertical-slice editing (one act at a time) also works; see `storyboard.md` for shot IDs.
+
+### Visual assets (tactical map)
+
+| Asset | Location | Used by |
+|-------|----------|---------|
+| `river-graphic.png` | repo root + `remotion/public/assets/` | `TacticalMap` background |
+| `boat.png` | repo root + `remotion/public/assets/` | Raft tokens on river path |
+| River path waypoints | `remotion/src/data/mapLayout.ts` | Boat drift along `RIVER_PATH` |
+| Path calibrator | `remotion/public/calibrate-river-path.html` | Click-to-trace; paste into `mapLayout.ts` |
+
+Hex ranges in VO and Phoenix Command math are **simulation distances** — not pixel positions on the artwork.
 
 ## Video Specs
 
@@ -50,10 +76,12 @@ Override the path with `PHOENIX_FUNCTIONS_PATH` if needed. The script creates `s
 ```bash
 cd remotion
 npm install
-npm start               # Remotion Studio at http://localhost:3000
-npm run render:intro    # Export IrrawaddyIntro composition
-npm run render:ambush   # Export Phase1Ambush composition
-npm run render:all      # Batch export all compositions
+npm start                    # Remotion Studio at http://localhost:3000
+npm run render:intro         # IrrawaddyIntro
+npm run render:ambush        # Phase1Ambush (BAR hero beat)
+./scripts/render-tactical.sh # All tactical-map compositions
+./scripts/render-remaining.sh # Full batch minus intro (after link-phoenix)
+npm run render:all           # Original batch script
 ```
 
 Compositions are registered in `remotion/src/Root.tsx`. All combat math uses repo-root `src/functions.js` (from phoenix-functions) via the local `phoenix` wrapper — numbers on screen match the rulebook.

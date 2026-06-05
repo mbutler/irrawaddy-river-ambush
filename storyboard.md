@@ -2,6 +2,8 @@
 
 Frame-by-frame shot list. **Total runtime: ~42:30**
 
+**Edit workflow:** Full VO pass + rough cut first, then refine by act (time ranges below) or by storyboard ID. Remotion exports in `remotion/out/` swap per section without re-recording the whole script.
+
 **Legend:**  
 - **SB-###** = Storyboard ID (links to `frames.md` FR-###)  
 - **Comp** = Remotion composition to render  

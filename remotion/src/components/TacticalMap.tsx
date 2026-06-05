@@ -1,7 +1,15 @@
 import React from 'react';
-import { interpolate, useCurrentFrame } from 'remotion';
+import { interpolate, staticFile, useCurrentFrame } from 'remotion';
 import { colors, fonts } from '../lib/theme';
-import { MAP, RAFTS, KACHIN_POSITIONS, type RaftUnit } from '../data/scenario';
+import { MAP, RAFTS, KACHIN_POSITIONS } from '../data/scenario';
+import {
+  ARTWORK_MAP,
+  artworkBoatSize,
+  DEBUG_RIVER_PATH,
+  positionAlongRiverPath,
+  raftPathProgress,
+  RIVER_PATH,
+} from '../data/mapLayout';
 
 interface TacticalMapProps {
   phase: number;
@@ -28,38 +36,37 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
   const local = Math.max(0, frame - startFrame);
   const fadeIn = interpolate(local, [0, 20], [0, 1], { extrapolateRight: 'clamp' });
 
-  const driftY = (raft: RaftUnit) =>
-    raft.startY + (phase - 1) * MAP.hexesPerImpulse * 4 + local * 0.015;
+  const W = ARTWORK_MAP.width;
+  const H = ARTWORK_MAP.height;
+  const boatSize = artworkBoatSize();
 
-  const W = 840;
-  const H = 480;
-  // Near bank = left 15%, river = next 70%, far bank = right 15%
-  const nearBankPx = W * 0.15;
-  const farBankStartPx = W * 0.85;
-  const scaleX = (hex: number) => (hex / MAP.widthHexes) * W;
-  const scaleY = (hex: number) => (hex / 100) * H;
+  const raftPosition = (raftId: string) => {
+    const t = raftPathProgress(raftId, phase, local);
+    return positionAlongRiverPath(t);
+  };
 
-  const fromSq = KACHIN_POSITIONS.find((s) => s.id === tracerFrom);
-  const toRf = RAFTS.find((r) => r.id === tracerTo);
+  const squadPosition = (squadId: string) => {
+    const pos = ARTWORK_MAP.squads[squadId as keyof typeof ARTWORK_MAP.squads];
+    return pos ? { x: pos.x, y: pos.y } : { x: 0, y: 0 };
+  };
 
-  // Animated river current: dashoffset moves downstream each frame
-  const currentOffset = -(local * 1.6) % 40;
+  const fromSq = tracerFrom ? squadPosition(tracerFrom) : null;
+  const toRf = tracerTo ? raftPosition(tracerTo) : null;
 
-  // Tracer animation
   let tracerProgress = 0;
   if (fromSq && toRf && local > 8) {
     tracerProgress = interpolate(local, [8, 22], [0, 1], { extrapolateRight: 'clamp' });
   }
 
-  const fromX = fromSq ? scaleX(fromSq.x) : 0;
-  const fromY = fromSq ? scaleY(fromSq.y) : 0;
-  const toX = toRf ? scaleX(toRf.startX) : 0;
-  const toY = toRf && fromSq ? scaleY(driftY(toRf)) : 0;
+  const fromX = fromSq?.x ?? 0;
+  const fromY = fromSq?.y ?? 0;
+  const toX = toRf?.x ?? 0;
+  const toY = toRf?.y ?? 0;
 
-  // Compute tracer line length for dashoffset animation
-  const tracerLength = fromSq && toRf
-    ? Math.hypot(toX - fromX, toY - fromY)
-    : 0;
+  const tracerLength = fromSq && toRf ? Math.hypot(toX - fromX, toY - fromY) : 0;
+
+  const riverBg = staticFile('assets/river-graphic.png');
+  const boatImg = staticFile('assets/boat.png');
 
   return (
     <div
@@ -83,20 +90,14 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
           justifyContent: 'space-between',
         }}
       >
-        <span>TACTICAL MAP — KILL ZONE (ABSTRACT)</span>
+        <span>TACTICAL MAP — IRRAWADDY KILL ZONE</span>
         <span style={{ color: colors.textMuted }}>
-          Phase {phase} · {(MAP.currentKnots).toFixed(1)} kt current
+          Phase {phase} · {MAP.currentKnots.toFixed(1)} kt current
         </span>
       </div>
 
-      <svg
-        width={W}
-        height={H}
-        style={{ display: 'block' }}
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg width={W} height={H} style={{ display: 'block' }} xmlns="http://www.w3.org/2000/svg">
         <defs>
-          {/* Glow filter for tracer */}
           <filter id="tracerGlow" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur stdDeviation="3" result="blur" />
             <feMerge>
@@ -104,7 +105,6 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
-          {/* Subtle glow for active tokens */}
           <filter id="tokenGlow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="4" result="blur" />
             <feMerge>
@@ -112,159 +112,61 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
+          <filter id="boatShadow" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#000" floodOpacity="0.45" />
+          </filter>
         </defs>
 
-        {/* ── Far bank (right) ───────────────────────────────────────────── */}
-        <rect
-          x={farBankStartPx}
+        {/* River map artwork */}
+        <image
+          href={riverBg}
+          x={0}
           y={0}
-          width={W - farBankStartPx}
+          width={W}
           height={H}
-          fill={colors.jungleDeep}
-          opacity={0.5}
+          preserveAspectRatio="xMidYMid slice"
         />
-        {/* Far bank tree silhouettes */}
-        {[0.12, 0.25, 0.38, 0.52, 0.65, 0.78, 0.91].map((t, i) => {
-          const bx = farBankStartPx + 8 + (i % 3) * 10;
-          const by = H * t;
-          return (
-            <polygon
-              key={`ftree-${i}`}
-              points={`${bx},${by + 28} ${bx - 12},${by - 12} ${bx + 12},${by - 12}`}
-              fill={colors.jungleDeep}
-              opacity={0.55}
+
+        {/* Subtle vignette so HUD tokens read clearly */}
+        <rect x={0} y={0} width={W} height={H} fill="#0d1117" opacity={0.12} />
+
+        {/* Debug: river centerline — enable DEBUG_RIVER_PATH in mapLayout.ts while calibrating */}
+        {DEBUG_RIVER_PATH && (
+          <>
+            <polyline
+              points={RIVER_PATH.map((p) => `${p.x},${p.y}`).join(' ')}
+              fill="none"
+              stroke="#00e5ff"
+              strokeWidth={2}
+              strokeDasharray="8 6"
+              opacity={0.9}
             />
-          );
-        })}
-
-        {/* ── River fill ────────────────────────────────────────────────── */}
-        <rect
-          x={nearBankPx}
-          y={0}
-          width={farBankStartPx - nearBankPx}
-          height={H}
-          fill={colors.riverDeep}
-        />
-        {/* River depth gradient layers */}
-        <rect
-          x={nearBankPx}
-          y={0}
-          width={(farBankStartPx - nearBankPx) * 0.15}
-          height={H}
-          fill={colors.riverCurrent}
-          opacity={0.18}
-        />
-        <rect
-          x={farBankStartPx - (farBankStartPx - nearBankPx) * 0.15}
-          y={0}
-          width={(farBankStartPx - nearBankPx) * 0.15}
-          height={H}
-          fill={colors.riverCurrent}
-          opacity={0.12}
-        />
-
-        {/* Animated current lines (scrolling downstream) */}
-        {[0.1, 0.22, 0.34, 0.46, 0.58, 0.70, 0.82, 0.94].map((yFrac, i) => (
-          <line
-            key={`current-${i}`}
-            x1={nearBankPx + 8}
-            y1={H * yFrac}
-            x2={farBankStartPx - 8}
-            y2={H * yFrac}
-            stroke={colors.riverCurrent}
-            strokeWidth={1}
-            strokeDasharray="24 16"
-            strokeDashoffset={currentOffset + i * 5}
-            opacity={0.22}
-          />
-        ))}
-
-        {/* Current direction arrows (SVG path arrows) */}
-        {[0.28, 0.55, 0.82].map((yFrac, i) => {
-          const ax = W * 0.5;
-          const ay = H * yFrac;
-          return (
-            <g key={`arrow-${i}`} opacity={0.45}>
-              <line
-                x1={ax}
-                y1={ay - 16}
-                x2={ax}
-                y2={ay + 16}
-                stroke={colors.riverCurrent}
-                strokeWidth={1.5}
-              />
-              <polygon
-                points={`${ax},${ay + 22} ${ax - 6},${ay + 8} ${ax + 6},${ay + 8}`}
-                fill={colors.riverCurrent}
-              />
-              {i === 1 && (
-                <text
-                  x={ax + 14}
-                  y={ay + 4}
-                  fill={colors.riverCurrent}
-                  fontSize={9}
-                  fontFamily={fonts.data}
-                  opacity={0.7}
-                >
-                  {MAP.currentKnots} kt
+            {RIVER_PATH.map((p, i) => (
+              <g key={`wp-${i}`}>
+                <circle cx={p.x} cy={p.y} r={4} fill="#00e5ff" />
+                <text x={p.x + 6} y={p.y - 6} fill="#00e5ff" fontSize={8} fontFamily={fonts.data}>
+                  {i}
                 </text>
-              )}
-            </g>
-          );
-        })}
+              </g>
+            ))}
+          </>
+        )}
 
-        {/* ── Near bank jungle ─────────────────────────────────────────── */}
-        <rect x={0} y={0} width={nearBankPx} height={H} fill={colors.jungleDeep} opacity={0.92} />
-        {/* Jungle texture — horizontal bands */}
-        {[0.08, 0.18, 0.28, 0.38, 0.48, 0.58, 0.68, 0.78, 0.88, 0.98].map((t, i) => (
-          <rect
-            key={`tex-${i}`}
-            x={0}
-            y={H * t - 1}
-            width={nearBankPx}
-            height={2}
-            fill={colors.jungleAccent}
-            opacity={0.07 + (i % 3) * 0.02}
-          />
-        ))}
-        {/* Near bank tree silhouettes */}
-        {[0.07, 0.18, 0.30, 0.42, 0.54, 0.66, 0.78, 0.90].map((t, i) => {
-          const tx = nearBankPx - 14 - (i % 2) * 6;
-          const ty = H * t;
-          return (
-            <polygon
-              key={`ntree-${i}`}
-              points={`${tx},${ty + 22} ${tx - 10},${ty - 14} ${tx + 10},${ty - 14}`}
-              fill={colors.jungleAccent}
-              opacity={0.3 + (i % 3) * 0.07}
-            />
-          );
-        })}
-        {/* Bank edge highlight */}
-        <line
-          x1={nearBankPx}
-          y1={0}
-          x2={nearBankPx}
-          y2={H}
-          stroke={colors.jungleAccent}
-          strokeWidth={1.5}
-          opacity={0.4}
-        />
-
-        {/* ── Kachin squad tokens ───────────────────────────────────────── */}
+        {/* Kachin squad tokens */}
         {KACHIN_POSITIONS.map((sq) => {
+          const pos = squadPosition(sq.id);
+          const layout = ARTWORK_MAP.squads[sq.id as keyof typeof ARTWORK_MAP.squads];
           const active = activeSquads.includes(sq.id);
-          const cx = scaleX(sq.x);
-          const cy = scaleY(sq.y);
+          const cx = pos.x;
+          const cy = pos.y;
           const r = active ? 11 : 8;
           const fill = active ? colors.alliedPrimary : colors.jungleAccent;
-          const opacity = active ? 1 : 0.65;
+          const opacity = active ? 1 : 0.82;
 
           return (
             <g key={sq.id} opacity={opacity} filter={active ? 'url(#tokenGlow)' : undefined}>
-              {/* Squad circle */}
-              <circle cx={cx} cy={cy} r={r} fill={fill} />
-              {/* Rank/ID indicator inside */}
+              <circle cx={cx} cy={cy} r={r + 3} fill={colors.bgDark} opacity={0.55} />
+              <circle cx={cx} cy={cy} r={r} fill={fill} stroke={colors.bgDark} strokeWidth={1.5} />
               <text
                 x={cx}
                 y={cy + 3.5}
@@ -276,49 +178,48 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
               >
                 {sq.id.substring(0, 1).toUpperCase()}
               </text>
-              {/* Label — offset right so it clears the bank */}
               <text
-                x={cx + r + 4}
+                x={cx + r + 6}
                 y={cy - 10}
-                fill={active ? colors.alliedTracer : colors.textSecondary}
+                fill={active ? colors.alliedTracer : colors.textPrimary}
                 fontSize={9}
                 fontFamily={fonts.data}
                 fontWeight={active ? 700 : 400}
+                style={{ textShadow: '0 1px 3px rgba(0,0,0,0.9)' }}
               >
-                {sq.label}
+                {layout?.label ?? sq.label}
               </text>
-              {/* Range label below */}
               {active && (
                 <text
-                  x={cx + r + 4}
+                  x={cx + r + 6}
                   y={cy + 4}
-                  fill={colors.textMuted}
+                  fill={colors.riverFoam}
                   fontSize={8}
                   fontFamily={fonts.data}
                 >
-                  {sq.rangeToRiverHexes} hex / {Math.round(sq.rangeToRiverHexes * 1.83)}m
+                  {layout?.rangeToRiverHexes ?? sq.rangeToRiverHexes} hex /{' '}
+                  {Math.round((layout?.rangeToRiverHexes ?? sq.rangeToRiverHexes) * 1.83)}m
                 </text>
               )}
             </g>
           );
         })}
 
-        {/* ── Range arc (active squad → active raft) ────────────────────── */}
+        {/* Range arc */}
         {fromSq && toRf && (
           <path
             d={`M ${fromX} ${fromY} C ${fromX + (toX - fromX) * 0.35} ${fromY} ${fromX + (toX - fromX) * 0.65} ${toY} ${toX} ${toY}`}
             fill="none"
             stroke={colors.alliedPrimary}
-            strokeWidth={1}
+            strokeWidth={1.5}
             strokeDasharray="6 6"
-            opacity={interpolate(local, [0, 15], [0, 0.35], { extrapolateRight: 'clamp' })}
+            opacity={interpolate(local, [0, 15], [0, 0.55], { extrapolateRight: 'clamp' })}
           />
         )}
 
-        {/* ── Tracer line (animated draw) ───────────────────────────────── */}
+        {/* Tracer */}
         {fromSq && toRf && tracerLength > 0 && (
           <>
-            {/* Glow layer */}
             <line
               x1={fromX}
               y1={fromY}
@@ -331,7 +232,6 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
               opacity={0.25}
               filter="url(#tracerGlow)"
             />
-            {/* Core line */}
             <line
               x1={fromX}
               y1={fromY}
@@ -341,101 +241,112 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
               strokeWidth={2}
               strokeDasharray={`${tracerLength} ${tracerLength}`}
               strokeDashoffset={tracerLength * (1 - tracerProgress)}
-              opacity={0.9}
+              opacity={0.95}
             />
           </>
         )}
 
-        {/* ── Raft tokens ───────────────────────────────────────────────── */}
+        {/* Raft boats */}
         {RAFTS.map((raft) => {
           const sunk = sunkRafts.includes(raft.id);
           const cas = raftCasualties[raft.id] ?? 0;
           const active = activeRafts.includes(raft.id);
-          const cy = scaleY(driftY(raft));
-          const rx = scaleX(raft.startX);
+          const { x: rx, y: cy, angleDeg } = raftPosition(raft.id);
+          const layout = ARTWORK_MAP.rafts[raft.id as keyof typeof ARTWORK_MAP.rafts];
+          const bw = boatSize.width;
+          const bh = boatSize.height;
 
           return (
-            <g key={raft.id} opacity={sunk ? 0.35 : 1}>
-              {/* Active highlight ring */}
+            <g key={raft.id} opacity={sunk ? 0.4 : 1}>
               {active && !sunk && (
-                <rect
-                  x={rx - 34}
-                  y={cy - 16}
-                  width={68}
-                  height={32}
-                  rx={6}
+                <ellipse
+                  cx={rx}
+                  cy={cy}
+                  rx={bh * 0.35}
+                  ry={bw * 0.85}
                   fill="none"
                   stroke={colors.alliedTracer}
                   strokeWidth={2}
-                  opacity={0.7}
+                  opacity={0.75}
                   filter="url(#tokenGlow)"
+                  transform={`rotate(${angleDeg}, ${rx}, ${cy})`}
                 />
               )}
-              {/* Raft body */}
-              <rect
-                x={rx - 28}
-                y={cy - 12}
-                width={56}
-                height={24}
-                rx={4}
-                fill={sunk ? colors.bgPanelBorder : colors.japanesePrimary}
-                stroke={active ? colors.alliedTracer : colors.japaneseAccent}
-                strokeWidth={active ? 2 : 1}
+
+              <image
+                href={boatImg}
+                x={-bw / 2}
+                y={-bh / 2}
+                width={bw}
+                height={bh}
+                preserveAspectRatio="xMidYMid meet"
+                filter={sunk ? undefined : 'url(#boatShadow)'}
+                opacity={sunk ? 0.55 : 1}
+                transform={`translate(${rx}, ${cy}) rotate(${angleDeg})`}
               />
-              {/* Sunk X overlay */}
+
               {sunk && (
-                <>
+                <g transform={`translate(${rx}, ${cy}) rotate(${angleDeg})`}>
                   <line
-                    x1={rx - 28}
-                    y1={cy - 12}
-                    x2={rx + 28}
-                    y2={cy + 12}
+                    x1={-bw / 2}
+                    y1={-bh / 2}
+                    x2={bw / 2}
+                    y2={bh / 2}
                     stroke={colors.hudRed}
-                    strokeWidth={2}
-                    opacity={0.8}
+                    strokeWidth={2.5}
+                    opacity={0.9}
                   />
                   <line
-                    x1={rx + 28}
-                    y1={cy - 12}
-                    x2={rx - 28}
-                    y2={cy + 12}
+                    x1={bw / 2}
+                    y1={-bh / 2}
+                    x2={-bw / 2}
+                    y2={bh / 2}
                     stroke={colors.hudRed}
-                    strokeWidth={2}
-                    opacity={0.8}
+                    strokeWidth={2.5}
+                    opacity={0.9}
                   />
-                </>
+                </g>
               )}
-              {/* Troop count */}
+
+              <rect
+                x={rx - 18}
+                y={cy + bh * 0.35 + 2}
+                width={36}
+                height={14}
+                rx={3}
+                fill={colors.bgDark}
+                opacity={0.72}
+              />
               <text
                 x={rx}
-                y={cy + 4}
+                y={cy + bh * 0.35 + 12}
                 fill={sunk ? colors.textMuted : colors.textPrimary}
-                fontSize={10}
+                fontSize={9}
                 textAnchor="middle"
                 fontFamily={fonts.data}
                 fontWeight={600}
               >
                 {raft.troops - cas}/{raft.troops}
               </text>
-              {/* Raft label above */}
+
               <text
                 x={rx}
-                y={cy - 18}
-                fill={active ? colors.alliedTracer : colors.textSecondary}
+                y={cy - bh * 0.35 - 6}
+                fill={active ? colors.alliedTracer : colors.textPrimary}
                 fontSize={8}
                 textAnchor="middle"
                 fontFamily={fonts.data}
+                fontWeight={active ? 600 : 400}
               >
-                {raft.label}
+                {layout?.label ?? raft.label}
               </text>
-              {/* LMG indicator */}
+
               {raft.lmg && !sunk && (
                 <circle
-                  cx={rx + 26}
-                  cy={cy - 10}
+                  cx={rx + Math.cos((angleDeg * Math.PI) / 180) * (bh * 0.35)}
+                  cy={cy + Math.sin((angleDeg * Math.PI) / 180) * (bh * 0.35)}
                   r={4}
                   fill={colors.japaneseAccent}
-                  opacity={0.8}
                 />
               )}
             </g>

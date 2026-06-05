@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Irrawaddy — River Path Calibrator</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      background: #0d1117;
+      color: #e6edf3;
+      display: flex;
+      min-height: 100vh;
+    }
+    aside {
+      width: 360px;
+      padding: 16px;
+      border-right: 1px solid #30363d;
+      overflow-y: auto;
+    }
+    main {
+      flex: 1;
+      padding: 16px;
+      overflow: auto;
+    }
+    h1 { font-size: 14px; letter-spacing: 0.08em; margin: 0 0 12px; color: #c9a227; }
+    p, li { font-size: 12px; line-height: 1.5; color: #8b949e; }
+    ol { padding-left: 18px; margin: 8px 0 16px; }
+    button {
+      display: block;
+      width: 100%;
+      margin: 6px 0;
+      padding: 8px 12px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      color: #e6edf3;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+    }
+    button:hover { border-color: #58a6ff; }
+    button.primary { border-color: #c9a227; color: #c9a227; }
+    textarea {
+      width: 100%;
+      height: 220px;
+      margin-top: 8px;
+      padding: 10px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      color: #3dd68c;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 11px;
+      resize: vertical;
+    }
+    #canvas-wrap {
+      position: relative;
+      display: inline-block;
+      cursor: crosshair;
+      border: 1px solid #30363d;
+    }
+    canvas { display: block; }
+    .stat { font-size: 11px; color: #6e7681; margin: 4px 0; }
+    .hint { color: #58a6ff; }
+  </style>
+</head>
+<body>
+  <aside>
+    <h1>RIVER PATH CALIBRATOR</h1>
+    <p>Click the <strong>river centerline</strong> upstream → downstream. Waypoints are in <strong>map pixels</strong> (840×474), same coords as <code>mapLayout.ts</code>.</p>
+    <ol>
+      <li>Click along the blue channel (start top-left entry)</li>
+      <li>Add more points on bends; drag dots to nudge</li>
+      <li>Copy output → paste into chat or <code>RIVER_PATH</code></li>
+    </ol>
+    <button id="undo">Undo last point</button>
+    <button id="clear">Clear all</button>
+    <button id="load-current" class="primary">Load current mapLayout.ts</button>
+    <button id="copy" class="primary">Copy RIVER_PATH to clipboard</button>
+    <p class="stat">Points: <span id="count">0</span></p>
+    <p class="stat">Map: 840 × <span id="map-h">474</span> px</p>
+    <textarea id="output" readonly placeholder="Click the map to generate waypoints…"></textarea>
+    <p class="hint">Share the textarea contents or a screenshot of this page with the cyan line visible.</p>
+  </aside>
+  <main>
+    <div id="canvas-wrap">
+      <canvas id="c" width="840" height="474"></canvas>
+    </div>
+  </main>
+  <script>
+    const MAP_W = 840;
+    const MAP_H = Math.round(840 * (941 / 1672));
+    document.getElementById('map-h').textContent = MAP_H;
+
+    const canvas = document.getElementById('c');
+    canvas.height = MAP_H;
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    img.src = 'assets/river-graphic.png';
+
+    // Default from mapLayout.ts — update if file changes
+    const DEFAULT_PATH = [
+      { x: 78, y: 14 },
+      { x: 126, y: 68 },
+      { x: 167, y: 131 },
+      { x: 217, y: 191 },
+      { x: 283, y: 246 },
+      { x: 357, y: 284 },
+      { x: 438, y: 309 },
+      { x: 523, y: 317 },
+      { x: 611, y: 330 },
+      { x: 701, y: 231 },
+      { x: 687, y: 24 },
+    ];
+
+    let points = [];
+    let dragIndex = -1;
+
+    function fmt() {
+      const lines = points.map((p) => `  { x: ${Math.round(p.x)}, y: ${Math.round(p.y)} },`);
+      const text =
+        'export const RIVER_PATH = [\n' +
+        lines.join('\n') +
+        '\n];';
+      document.getElementById('output').value = text;
+      document.getElementById('count').textContent = points.length;
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, MAP_W, MAP_H);
+      if (img.complete) {
+        ctx.drawImage(img, 0, 0, MAP_W, MAP_H);
+      }
+      ctx.fillStyle = 'rgba(13, 17, 23, 0.15)';
+      ctx.fillRect(0, 0, MAP_W, MAP_H);
+
+      if (points.length > 1) {
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+        ctx.strokeStyle = '#00e5ff';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([8, 6]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      points.forEach((p, i) => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+        ctx.fillStyle = i === dragIndex ? '#ffc857' : '#00e5ff';
+        ctx.fill();
+        ctx.fillStyle = '#0d1117';
+        ctx.font = '10px monospace';
+        ctx.fillText(String(i), p.x + 7, p.y - 7);
+      });
+    }
+
+    function canvasPos(e) {
+      const r = canvas.getBoundingClientRect();
+      const sx = MAP_W / r.width;
+      const sy = MAP_H / r.height;
+      return {
+        x: Math.max(0, Math.min(MAP_W, (e.clientX - r.left) * sx)),
+        y: Math.max(0, Math.min(MAP_H, (e.clientY - r.top) * sy)),
+      };
+    }
+
+    function hitIndex(pos) {
+      for (let i = points.length - 1; i >= 0; i--) {
+        if (Math.hypot(points[i].x - pos.x, points[i].y - pos.y) < 10) return i;
+      }
+      return -1;
+    }
+
+    canvas.addEventListener('mousedown', (e) => {
+      const pos = canvasPos(e);
+      const hit = hitIndex(pos);
+      if (hit >= 0) {
+        dragIndex = hit;
+      } else {
+        points.push(pos);
+        dragIndex = points.length - 1;
+        fmt();
+      }
+      draw();
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (dragIndex < 0) return;
+      const pos = canvasPos(e);
+      points[dragIndex] = pos;
+      fmt();
+      draw();
+    });
+
+    window.addEventListener('mouseup', () => {
+      dragIndex = -1;
+      draw();
+    });
+
+    document.getElementById('undo').onclick = () => {
+      points.pop();
+      fmt();
+      draw();
+    };
+
+    document.getElementById('clear').onclick = () => {
+      points = [];
+      fmt();
+      draw();
+    };
+
+    document.getElementById('load-current').onclick = () => {
+      points = DEFAULT_PATH.map((p) => ({ ...p }));
+      fmt();
+      draw();
+    };
+
+    document.getElementById('copy').onclick = async () => {
+      const t = document.getElementById('output').value;
+      await navigator.clipboard.writeText(t);
+      alert('Copied! Paste into chat or mapLayout.ts');
+    };
+
+    img.onload = () => {
+      points = DEFAULT_PATH.map((p) => ({ ...p }));
+      fmt();
+      draw();
+    };
+  </script>
+</body>
+</html>
