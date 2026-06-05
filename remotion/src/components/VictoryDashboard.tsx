@@ -88,41 +88,6 @@ const SidePanel: React.FC<{
   );
 };
 
-interface LayerBadgeProps {
-  mode: 'historical' | 'hybrid' | 'simulation';
-}
-
-export const LayerBadge: React.FC<LayerBadgeProps> = ({ mode }) => {
-  const labels = {
-    historical: 'HISTORICAL MODE',
-    hybrid: 'HYBRID MODE',
-    simulation: 'SIMULATION MODE',
-  };
-  const accent = {
-    historical: colors.neutral,
-    hybrid: colors.jungleAccent,
-    simulation: colors.hudPhosphor,
-  };
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        top: layout.safeMargin,
-        left: layout.safeMargin,
-        fontFamily: fonts.data,
-        fontSize: 11,
-        letterSpacing: 3,
-        color: accent[mode],
-        border: `1px solid ${accent[mode]}`,
-        padding: '6px 14px',
-        borderRadius: 4,
-      }}
-    >
-      {labels[mode]}
-    </div>
-  );
-};
-
 interface TitleCardProps {
   line1: string;
   line2?: string;

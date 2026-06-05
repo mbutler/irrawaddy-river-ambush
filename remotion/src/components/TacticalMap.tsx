@@ -1,6 +1,6 @@
 import React from 'react';
 import { interpolate, staticFile, useCurrentFrame } from 'remotion';
-import { colors, fonts } from '../lib/theme';
+import { colors, fonts, layout as screenLayout } from '../lib/theme';
 import { MAP, RAFTS, KACHIN_POSITIONS } from '../data/scenario';
 import {
   ARTWORK_MAP,
@@ -9,6 +9,7 @@ import {
   positionAlongRiverPath,
   raftPathProgress,
   RIVER_PATH,
+  tacticalMapHeroScale,
 } from '../data/mapLayout';
 
 interface TacticalMapProps {
@@ -20,6 +21,8 @@ interface TacticalMapProps {
   raftCasualties?: Record<string, number>;
   sunkRafts?: string[];
   startFrame?: number;
+  /** `panel` = compact for combat beats; `hero` = fill frame for TacticalSetup */
+  size?: 'panel' | 'hero';
 }
 
 export const TacticalMap: React.FC<TacticalMapProps> = ({
@@ -31,13 +34,19 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
   raftCasualties = {},
   sunkRafts = [],
   startFrame = 0,
+  size = 'panel',
 }) => {
   const frame = useCurrentFrame();
   const local = Math.max(0, frame - startFrame);
   const fadeIn = interpolate(local, [0, 20], [0, 1], { extrapolateRight: 'clamp' });
 
-  const W = ARTWORK_MAP.width;
-  const H = ARTWORK_MAP.height;
+  const isHero = size === 'hero';
+  const mapScale = isHero ? tacticalMapHeroScale(screenLayout) : 1;
+  const baseW = ARTWORK_MAP.width;
+  const baseH = ARTWORK_MAP.height;
+  const W = baseW * mapScale;
+  const H = baseH * mapScale;
+  const pad = isHero ? 16 : 20;
   const boatSize = artworkBoatSize();
 
   const raftPosition = (raftId: string) => {
@@ -71,11 +80,11 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
   return (
     <div
       style={{
-        width: W + 40,
-        padding: 20,
+        width: W + pad * 2,
+        padding: pad,
         background: colors.bgPanel,
         border: `1px solid ${colors.bgPanelBorder}`,
-        borderRadius: 8,
+        borderRadius: isHero ? 10 : 8,
         opacity: fadeIn,
         fontFamily: fonts.data,
       }}
@@ -83,9 +92,9 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
       <div
         style={{
           color: colors.textSecondary,
-          fontSize: 10,
+          fontSize: isHero ? 12 : 10,
           letterSpacing: '0.2em',
-          marginBottom: 8,
+          marginBottom: isHero ? 10 : 8,
           display: 'flex',
           justifyContent: 'space-between',
         }}
@@ -117,18 +126,19 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
           </filter>
         </defs>
 
+        <g transform={`scale(${mapScale})`}>
         {/* River map artwork */}
         <image
           href={riverBg}
           x={0}
           y={0}
-          width={W}
-          height={H}
+          width={baseW}
+          height={baseH}
           preserveAspectRatio="xMidYMid slice"
         />
 
         {/* Subtle vignette so HUD tokens read clearly */}
-        <rect x={0} y={0} width={W} height={H} fill="#0d1117" opacity={0.12} />
+        <rect x={0} y={0} width={baseW} height={baseH} fill="#0d1117" opacity={0.12} />
 
         {/* Debug: river centerline — enable DEBUG_RIVER_PATH in mapLayout.ts while calibrating */}
         {DEBUG_RIVER_PATH && (
@@ -352,9 +362,17 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
             </g>
           );
         })}
+        </g>
       </svg>
 
-      <div style={{ color: colors.textMuted, fontSize: 9, marginTop: 6, letterSpacing: '0.05em' }}>
+      <div
+        style={{
+          color: colors.textMuted,
+          fontSize: isHero ? 10 : 9,
+          marginTop: isHero ? 8 : 6,
+          letterSpacing: '0.05em',
+        }}
+      >
         {MAP.note}
       </div>
     </div>

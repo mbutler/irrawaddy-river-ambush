@@ -11,6 +11,8 @@ interface EALPanelProps {
   rangeMeters: number;
   shotType: string;
   startFrame?: number;
+  /** `embedded` = flows in a column layout; default `overlay` = absolute top-right */
+  layout?: 'overlay' | 'embedded';
 }
 
 export const EALPanel: React.FC<EALPanelProps> = ({
@@ -21,6 +23,7 @@ export const EALPanel: React.FC<EALPanelProps> = ({
   rangeMeters,
   shotType,
   startFrame = 0,
+  layout: panelLayout = 'overlay',
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -43,13 +46,16 @@ export const EALPanel: React.FC<EALPanelProps> = ({
     .slice(0, rowsVisible)
     .reduce((sum, m) => sum + m.value, 0);
 
+  const isEmbedded = panelLayout === 'embedded';
+
   return (
     <div
       style={{
-        position: 'absolute',
-        top: layout.safeMargin,
-        right: layout.safeMargin,
-        width: 420,
+        position: isEmbedded ? 'relative' : 'absolute',
+        top: isEmbedded ? undefined : layout.safeMargin,
+        right: isEmbedded ? undefined : layout.safeMargin,
+        width: isEmbedded ? '100%' : 420,
+        flexShrink: isEmbedded ? 0 : undefined,
         fontFamily: fonts.data,
         transform: `translateX(${translateX}px)`,
         opacity: slideIn,

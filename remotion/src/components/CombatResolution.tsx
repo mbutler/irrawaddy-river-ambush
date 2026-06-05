@@ -6,9 +6,9 @@ import { DiceRoller } from './DiceRoller';
 import { PhaseClock } from './PhaseClock';
 import { TacticalMap } from './TacticalMap';
 import { CharacterCard, KVGauge } from './CharacterCard';
-import { LayerBadge } from './VictoryDashboard';
 import { getBeat, KACHIN, JAPANESE } from '../data/scenario';
 import { resolveDamage } from '../lib/phoenix';
+import type { CombatBeat } from '../data/scenario';
 
 interface CombatResolutionProps {
   beatId: string;
@@ -20,7 +20,6 @@ const BEAT_OVERLAYS: Partial<Record<string, string>> = {
   'beat-08': 'Delta: 3× M1 Carbine covering fire',
 };
 
-// Map character IDs to squad/position IDs for tracer routing
 const CHAR_TO_SQUAD: Record<string, string> = {
   'k-01': 'alpha',
   'k-02': 'alpha',
@@ -37,7 +36,160 @@ const CHAR_TO_SQUAD: Record<string, string> = {
   'j-07': 'raft-3',
 };
 
-/** Full-screen combat beat: two-column layout — map+character left, EAL+dice right */
+const CONTENT_TOP = 128;
+const BOTTOM_RESERVE = 168;
+const LEFT_COL_W = 900;
+const RIGHT_COL_W = 420;
+const RIGHT_COL_X = layout.width - layout.safeMargin - RIGHT_COL_W;
+const CENTER_X = layout.safeMargin + LEFT_COL_W + (RIGHT_COL_X - layout.safeMargin - LEFT_COL_W) / 2;
+
+interface BeatOutcomePanelProps {
+  beat: CombatBeat;
+  hit: boolean;
+  damage: ReturnType<typeof resolveDamage> | null;
+  overlayLabel?: string;
+  opacity: number;
+  resultOpacity: number;
+  damageOpacity: number;
+}
+
+const BeatOutcomePanel: React.FC<BeatOutcomePanelProps> = ({
+  beat,
+  hit,
+  damage,
+  overlayLabel,
+  opacity,
+  resultOpacity,
+  damageOpacity,
+}) => {
+  const resultColor =
+    beat.beatType === 'morale' ? colors.hudAmber : hit ? colors.hudGreen : colors.hudRed;
+
+  return (
+    <div
+      style={{
+        flex: 1,
+        minWidth: 0,
+        minHeight: 148,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 8,
+        background: colors.bgPanel,
+        border: `1px solid ${colors.bgPanelBorder}`,
+        borderRadius: layout.panelRadius,
+        padding: '12px 16px',
+        opacity,
+      }}
+    >
+      {overlayLabel && (
+        <div
+          style={{
+            fontFamily: fonts.data,
+            fontSize: 10,
+            letterSpacing: '0.08em',
+            color: colors.riverFoam,
+          }}
+        >
+          {overlayLabel}
+        </div>
+      )}
+
+      <div
+        style={{
+          fontFamily: fonts.historical,
+          fontSize: 13,
+          fontStyle: 'italic',
+          color: colors.textSecondary,
+          lineHeight: 1.4,
+        }}
+      >
+        {beat.narration}
+      </div>
+
+      {beat.notes.length > 0 && (
+        <div
+          style={{
+            fontFamily: fonts.data,
+            fontSize: 12,
+            letterSpacing: '0.03em',
+            color: resultColor,
+            lineHeight: 1.4,
+            fontWeight: 700,
+            opacity: resultOpacity,
+            paddingTop: 6,
+            borderTop: `1px solid ${colors.bgPanelBorder}`,
+          }}
+        >
+          {beat.notes[0]}
+        </div>
+      )}
+
+      <div style={{ display: 'flex', gap: 16, alignItems: 'flex-end', marginTop: 'auto', flexWrap: 'wrap' }}>
+        {damage && hit && beat.beatType === 'fire' && (
+          <div
+            style={{
+              display: 'flex',
+              gap: 20,
+              paddingTop: 8,
+              borderTop: `1px solid ${colors.hudRed}`,
+              opacity: damageOpacity,
+              flex: '1 1 auto',
+            }}
+          >
+            <DamageStat label="Location" value={damage.location} />
+            <DamageStat label="PEN" value={String(damage.pen)} accent={colors.hudAmber} />
+            <DamageStat label="DC" value={String(damage.dc)} accent={colors.hudAmber} />
+            <DamageStat
+              label="PD"
+              value={String(damage.pd)}
+              accent={damage.pd > 10 ? colors.hudRed : colors.hudGreen}
+            />
+          </div>
+        )}
+
+        {beat.notes.length > 1 && (
+          <div
+            style={{
+              fontFamily: fonts.data,
+              fontSize: 10,
+              color: colors.textMuted,
+              letterSpacing: '0.05em',
+              opacity: resultOpacity,
+              flex: '1 1 200px',
+            }}
+          >
+            {beat.notes[1]}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const DamageStat: React.FC<{ label: string; value: string; accent?: string }> = ({
+  label,
+  value,
+  accent,
+}) => (
+  <div>
+    <div style={{ fontFamily: fonts.data, fontSize: 9, color: colors.textMuted, letterSpacing: '0.12em' }}>
+      {label}
+    </div>
+    <div
+      style={{
+        fontFamily: fonts.data,
+        fontSize: 13,
+        fontWeight: 700,
+        color: accent ?? colors.textPrimary,
+        marginTop: 2,
+      }}
+    >
+      {value}
+    </div>
+  </div>
+);
+
+/** Broadcast layout: map on top-left, outcome strip under map, EAL right, dice in center gap */
 export const CombatResolution: React.FC<CombatResolutionProps> = ({ beatId }) => {
   const beat = getBeat(beatId);
   const { fps } = useVideoConfig();
@@ -75,38 +227,29 @@ export const CombatResolution: React.FC<CombatResolutionProps> = ({ beatId }) =>
   const tracerTo =
     shooter?.side === 'kachin' ? beat.targetRaftId : CHAR_TO_SQUAD[beat.shooterId] ?? 'alpha';
 
-  // Title slide-in
   const titleOpacity = interpolate(frame, [0, 15], [0, 1], { extrapolateRight: 'clamp' });
   const titleY = interpolate(frame, [0, 15], [-12, 0], { extrapolateRight: 'clamp' });
 
-  // Narration fade-in (lower third, delayed)
-  const narrationOpacity = interpolate(frame, [fps * 1.5, fps * 2.5], [0, 1], {
+  const outcomeOpacity = interpolate(frame, [fps * 1.5, fps * 2.5], [0, 1], {
     extrapolateRight: 'clamp',
   });
-
-  // Notes fade-in (after narration)
-  const notesOpacity = interpolate(frame, [fps * 4, fps * 5], [0, 1], {
+  const resultOpacity = interpolate(frame, [fps * 4, fps * 5], [0, 1], {
+    extrapolateRight: 'clamp',
+  });
+  const damageOpacity = interpolate(frame, [fps * 5, fps * 5.5], [0, 1], {
     extrapolateRight: 'clamp',
   });
 
   const overlayLabel = BEAT_OVERLAYS[beatId];
-  const overlayOpacity = interpolate(frame, [fps * 2, fps * 2.5], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
 
   return (
     <AbsoluteFill style={{ background: colors.bgDark, fontFamily: fonts.body }}>
-      {/* ── Top bar ─────────────────────────────────────────────────────── */}
-      <LayerBadge mode="simulation" />
-
-      {/* Beat title – centered in the top bar */}
       <div
         style={{
           position: 'absolute',
           top: layout.safeMargin - 8,
-          left: 0,
-          right: 0,
+          left: layout.safeMargin,
+          right: layout.safeMargin,
           textAlign: 'center',
           fontFamily: fonts.headline,
           fontSize: 26,
@@ -121,8 +264,19 @@ export const CombatResolution: React.FC<CombatResolutionProps> = ({ beatId }) =>
         {beat.title.toUpperCase()}
       </div>
 
-      {/* ── Left column: Tactical Map (top) ─────────────────────────────── */}
-      <div style={{ position: 'absolute', left: layout.safeMargin, top: 130 }}>
+      {/* Left: map on top, shooter + outcome strip underneath */}
+      <div
+        style={{
+          position: 'absolute',
+          left: layout.safeMargin,
+          top: CONTENT_TOP,
+          width: LEFT_COL_W,
+          bottom: BOTTOM_RESERVE,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 12,
+        }}
+      >
         <TacticalMap
           phase={beat.phase}
           activeSquads={shooter?.side === 'kachin' ? [CHAR_TO_SQUAD[beat.shooterId]] : []}
@@ -131,21 +285,31 @@ export const CombatResolution: React.FC<CombatResolutionProps> = ({ beatId }) =>
           tracerTo={shooter?.side === 'kachin' ? beat.targetRaftId : undefined}
           sunkRafts={beat.beatType === 'morale' ? ['raft-1'] : []}
         />
+
+        <div style={{ display: 'flex', gap: 32, alignItems: 'stretch', flex: 1, minHeight: 0 }}>
+          {shooter && (
+            <div style={{ flexShrink: 0, width: 260 }}>
+              <CharacterCard character={shooter} startFrame={8} showWeapon />
+            </div>
+          )}
+          <BeatOutcomePanel
+            beat={beat}
+            hit={hit}
+            damage={damage}
+            overlayLabel={overlayLabel}
+            opacity={outcomeOpacity}
+            resultOpacity={resultOpacity}
+            damageOpacity={damageOpacity}
+          />
+        </div>
       </div>
 
-      {/* ── Left column: Shooter character card (below map) ─────────────── */}
-      {shooter && (
-        <div style={{ position: 'absolute', left: layout.safeMargin, top: 700 }}>
-          <CharacterCard character={shooter} startFrame={8} showWeapon />
-        </div>
-      )}
-
-      {/* ── Center gap: Dice Roller (fire beat) or KV Gauge (morale beat) ─ */}
+      {/* Center gap: dice / KV gauge */}
       <div
         style={{
           position: 'absolute',
-          left: 1080,
-          top: 420,
+          left: CENTER_X,
+          top: CONTENT_TOP + 140,
           transform: 'translateX(-50%)',
         }}
       >
@@ -154,7 +318,6 @@ export const CombatResolution: React.FC<CombatResolutionProps> = ({ beatId }) =>
             <DiceRoller targetRoll={beat.scriptedRoll} odds={beat.shot.odds} lockFrame={30} />
           </Sequence>
         ) : (
-          /* Morale beat: show KV incapacitation gauge instead */
           <Sequence from={fps * 1} durationInFrames={fps * 9}>
             <KVGauge
               currentPD={beat.pdTotal ?? 0}
@@ -166,129 +329,29 @@ export const CombatResolution: React.FC<CombatResolutionProps> = ({ beatId }) =>
         )}
       </div>
 
-      {/* ── Right column: EAL panel ─────────────────────────────────────── */}
-      <Sequence from={15} durationInFrames={fps * 10}>
-        <EALPanel
-          modifiers={beat.shot.modifiers}
-          eal={beat.shot.eal}
-          odds={beat.shot.odds}
-          weaponName={beat.shot.weaponName}
-          rangeMeters={beat.shot.rangeMeters}
-          shotType={beat.shot.mods.shotType}
-          startFrame={0}
-        />
-      </Sequence>
-
-      {overlayLabel && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 500,
-            right: layout.safeMargin,
-            width: 420,
-            fontFamily: fonts.data,
-            fontSize: 11,
-            letterSpacing: '0.06em',
-            color: colors.riverFoam,
-            textAlign: 'right',
-            opacity: overlayOpacity,
-            pointerEvents: 'none',
-          }}
-        >
-          {overlayLabel}
-        </div>
-      )}
-
-      {/* ── Bottom right: Damage readout (fire beat, on hit) ─────────────── */}
-      {damage && hit && beat.beatType === 'fire' && (
-        <Sequence from={fps * 5}>
-          <div
-            style={{
-              position: 'absolute',
-              right: layout.safeMargin,
-              bottom: 160,
-              width: 320,
-              fontFamily: fonts.data,
-              color: colors.textPrimary,
-              background: colors.bgPanel,
-              padding: '14px 18px',
-              borderRadius: layout.panelRadius,
-              border: `1px solid ${colors.hudRed}`,
-              boxShadow: `0 0 20px rgba(248,81,73,0.25)`,
-            }}
-          >
-            <div
-              style={{ color: colors.hudRed, fontSize: 10, letterSpacing: 3, marginBottom: 10 }}
-            >
-              DAMAGE RESOLUTION
-            </div>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '6px 16px',
-                fontSize: 14,
-              }}
-            >
-              <span style={{ color: colors.textMuted }}>Location</span>
-              <span style={{ color: colors.textPrimary, fontWeight: 600 }}>{damage.location}</span>
-              <span style={{ color: colors.textMuted }}>PEN</span>
-              <span style={{ color: colors.hudAmber }}>{damage.pen}</span>
-              <span style={{ color: colors.textMuted }}>DC</span>
-              <span style={{ color: colors.hudAmber }}>{damage.dc}</span>
-              <span style={{ color: colors.textMuted }}>PD</span>
-              <span
-                style={{
-                  color: damage.pd > (shooter?.kv ?? 99) ? colors.hudRed : colors.hudGreen,
-                  fontWeight: 700,
-                  fontSize: 16,
-                }}
-              >
-                {damage.pd}
-              </span>
-            </div>
-          </div>
-        </Sequence>
-      )}
-
-      {/* ── Lower third: narration ───────────────────────────────────────── */}
+      {/* Right: EAL only — outcome text lives under the map */}
       <div
         style={{
           position: 'absolute',
-          left: layout.safeMargin,
-          bottom: 160,
-          width: 860,
-          fontFamily: fonts.historical,
-          fontSize: 16,
-          fontStyle: 'italic',
-          color: colors.textSecondary,
-          lineHeight: 1.6,
-          opacity: narrationOpacity,
+          right: layout.safeMargin,
+          top: CONTENT_TOP,
+          width: RIGHT_COL_W,
         }}
       >
-        {beat.narration}
+        <Sequence from={15} durationInFrames={fps * 10}>
+          <EALPanel
+            modifiers={beat.shot.modifiers}
+            eal={beat.shot.eal}
+            odds={beat.shot.odds}
+            weaponName={beat.shot.weaponName}
+            rangeMeters={beat.shot.rangeMeters}
+            shotType={beat.shot.mods.shotType}
+            startFrame={0}
+            layout="embedded"
+          />
+        </Sequence>
       </div>
 
-      {/* Beat notes */}
-      {beat.notes.length > 0 && (
-        <div
-          style={{
-            position: 'absolute',
-            left: layout.safeMargin,
-            bottom: 110,
-            width: 860,
-            fontFamily: fonts.data,
-            fontSize: 11,
-            letterSpacing: '0.08em',
-            color: beat.beatType === 'morale' ? colors.hudAmber : (hit ? colors.hudGreen : colors.hudRed),
-            opacity: notesOpacity,
-          }}
-        >
-          {beat.notes[0]}
-        </div>
-      )}
-
-      {/* ── Phase clock ─────────────────────────────────────────────────── */}
       <PhaseClock phase={beat.phase} impulse={beat.impulse} />
     </AbsoluteFill>
   );

@@ -15,7 +15,7 @@ Frame-by-frame shot list. **Total runtime: ~42:30**
 
 | ID | Time In | Dur | Frame | Comp | Layer | Description | Audio |
 |----|---------|-----|-------|------|-------|-------------|-------|
-| SB-001 | 0:00 | 8s | FR-001 | IrrawaddyIntro | hybrid | River BG, jungle bank, 3 rafts drift in | Ambient river bed in |
+| SB-001 | 0:00 | 8s | FR-001 | IrrawaddyIntro | hybrid | Painted river map, hidden squad pulse, 3 boats drift in | Ambient river bed in |
 | SB-002 | 0:08 | 7s | FR-002 | IrrawaddyIntro | hybrid | Title card over river | VO SC-001 begins |
 | SB-003 | 0:15 | 5s | FR-003 | IrrawaddyIntro | simulation | PHASE 1 IMPULSE 1 slam + phase clock | SFX phase tone |
 | SB-004 | 0:20 | 10s | — | — | hybrid | Hold river, VO continues stakes | VO |

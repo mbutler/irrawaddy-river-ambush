@@ -32,11 +32,10 @@ Create as **Components** with variants:
 
 | Layer | Element | Spec |
 |-------|---------|------|
-| BG | Full bleed river gradient | `#2c4a6e` → `#4a7ab0`, 35%–65% viewport height |
-| L3 | Jungle bank left 22% | `#1a3c34` solid |
-| L4 | Current arrows ×4 | `#4a7ab0`, 14px ↓, 50% opacity, drift anim 2s loop |
-| L5 | Raft tokens ×3 | Component `RaftToken`, stagger fade Y from 42%→55% |
-| L6 | Vignette | radial, 15% edge `#0d1117` |
+| BG | Full bleed `river-graphic.png` | Cover scale 1920×1080; same asset as tactical map |
+| L3 | Hidden squad pulse ×4 | Near-bank positions from `mapLayout.ts`; 30% opacity flash ~frames 52–112 |
+| L4 | Raft boats ×3 | `boat.png` on `RIVER_PATH`; stagger fade-in; intro drift upstream→downstream |
+| L5 | Vignette | radial, edge `#0d1117` for title legibility |
 
 **Animation:** 0–2s fade from black; 2–8s rafts drift downstream.
 
@@ -389,14 +388,12 @@ Labels: Thompson / Carbine / BAR / Bren / M1919 sweet spots.
 
 | Region | Content |
 |--------|---------|
-| Top-left | `LayerBadge` simulation |
-| Top-center | Beat title 28px |
-| Left 50% | `TacticalMap` with tracer |
-| Bottom-left | `CharacterCard` shooter |
-| Top-right | `EALPanel` |
-| Center | `DiceRoller` |
-| Bottom-right | Damage panel (on hit) |
-| Bottom-center | `PhaseClock` |
+| Top-center | Beat title 26px |
+| Left column (top) | `TacticalMap` |
+| Left column (bottom) | `CharacterCard` + outcome panel — narration, HIT line, damage |
+| Center gap | `DiceRoller` or `KVGauge` |
+| Right column | `EALPanel` embedded |
+| Bottom-center | `PhaseClock` (reserved band — no text overlap) |
 
 ---
 

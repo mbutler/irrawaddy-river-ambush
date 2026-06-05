@@ -1,244 +1,198 @@
 import React from 'react';
-import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, interpolate, staticFile, useCurrentFrame } from 'remotion';
 import { colors, fonts, layout } from '../lib/theme';
-import { TitleCard, LayerBadge } from '../components/VictoryDashboard';
 import { PhaseClock } from '../components/PhaseClock';
-import { RAFTS } from '../data/scenario';
+import { KACHIN_POSITIONS, RAFTS } from '../data/scenario';
+import {
+  ARTWORK_MAP,
+  artworkBoatSize,
+  positionAlongRiverPath,
+} from '../data/mapLayout';
 
-// Raft drift constants — each raft moves at a slightly different rate
-const RAFT_DRIFT = [
-  { speedY: 0.018, speedX: 0.004 },
-  { speedY: 0.022, speedX: -0.003 },
-  { speedY: 0.015, speedX: 0.006 },
-];
+const INTRO_DRIFT_PER_FRAME = 0.00038;
+const INTRO_UPSTREAM_OFFSET = 0.1;
+
+function introRaftProgress(raftId: string, frame: number, raftIndex: number): number {
+  const raft = ARTWORK_MAP.rafts[raftId as keyof typeof ARTWORK_MAP.rafts];
+  if (!raft) return 0;
+  const enterDelay = 18 + raftIndex * 14;
+  const local = Math.max(0, frame - enterDelay);
+  const drift = local * INTRO_DRIFT_PER_FRAME;
+  return Math.max(0, Math.min(1, raft.pathStart - INTRO_UPSTREAM_OFFSET + drift));
+}
 
 export const IrrawaddyIntro: React.FC = () => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
 
-  const W = layout.width;   // 1920
-  const H = layout.height;  // 1080
+  const mapScale = Math.max(
+    layout.width / ARTWORK_MAP.width,
+    layout.height / ARTWORK_MAP.height
+  );
+  const mapW = ARTWORK_MAP.width * mapScale;
+  const mapH = ARTWORK_MAP.height * mapScale;
+  const mapX = (layout.width - mapW) / 2;
+  const mapY = (layout.height - mapH) / 2;
 
-  // Near bank: left 18%, River: 18–84%, Far bank: 84–100%
-  const nearBankW = W * 0.18;
-  const farBankX = W * 0.84;
-  const riverW = farBankX - nearBankW;
+  const boatSize = artworkBoatSize();
+  const riverBg = staticFile('assets/river-graphic.png');
+  const boatImg = staticFile('assets/boat.png');
 
-  // Animated river current offset (scrolling stripes)
-  const currentOffset = -(frame * 1.8) % 52;
+  const fadeFromBlack = interpolate(frame, [0, 50], [1, 0], {
+    extrapolateRight: 'clamp',
+  });
 
-  // Title fade-out starts at frame 105, gone by 130
   const titleOpacity = interpolate(frame, [0, 20, 105, 130], [0, 1, 1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  // Simulation layer elements fade in starting at frame 115
   const simOpacity = interpolate(frame, [115, 140], [0, 1], { extrapolateRight: 'clamp' });
 
-  // Phase 1 title slam — slides up from bottom
   const phaseY = interpolate(frame, [125, 145], [30, 0], { extrapolateRight: 'clamp' });
+
+  const squadPulse = interpolate(frame, [52, 72, 92, 112], [0, 0.32, 0.32, 0], {
+    extrapolateRight: 'clamp',
+  });
 
   return (
     <AbsoluteFill style={{ background: colors.bgDark, overflow: 'hidden' }}>
-
-      {/* ── Far bank (right) ──────────────────────────────────────────── */}
-      <div
-        style={{
-          position: 'absolute',
-          right: 0,
-          top: 0,
-          bottom: 0,
-          width: W - farBankX,
-          background: colors.jungleDeep,
-          opacity: 0.65,
-        }}
-      />
-      {/* Far bank tree silhouettes */}
       <svg
-        style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
-        width={W}
-        height={H}
+        width={layout.width}
+        height={layout.height}
+        style={{ position: 'absolute', inset: 0 }}
       >
-        {[0.06, 0.14, 0.23, 0.33, 0.43, 0.53, 0.63, 0.73, 0.83, 0.93].map((t, i) => {
-          const bx = farBankX + 16 + (i % 3) * 18;
-          const by = H * t;
-          const scale = 0.8 + (i % 3) * 0.2;
-          return (
-            <g key={`fartree-${i}`} opacity={0.55}>
-              <polygon
-                points={`${bx},${by + 32 * scale} ${bx - 18 * scale},${by - 20 * scale} ${bx + 18 * scale},${by - 20 * scale}`}
-                fill={colors.jungleDeep}
-              />
-              <polygon
-                points={`${bx},${by + 18 * scale} ${bx - 13 * scale},${by - 30 * scale} ${bx + 13 * scale},${by - 30 * scale}`}
-                fill={colors.jungleAccent}
-                opacity={0.3}
-              />
-            </g>
-          );
-        })}
-      </svg>
+        <defs>
+          <radialGradient id="introVignette" cx="50%" cy="45%" r="72%">
+            <stop offset="0%" stopColor="#0d1117" stopOpacity={0} />
+            <stop offset="100%" stopColor="#0d1117" stopOpacity={1} />
+          </radialGradient>
+          <filter id="introBoatGlow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="5" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <filter id="introBoatShadow" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#000" floodOpacity="0.5" />
+          </filter>
+        </defs>
 
-      {/* ── River animated layers ────────────────────────────────────── */}
-      {/* Base river fill */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          left: nearBankW,
-          width: riverW,
-          background: `linear-gradient(180deg, ${colors.riverDeep} 0%, ${colors.riverCurrent} 50%, ${colors.riverDeep} 100%)`,
-          opacity: 0.9,
-        }}
-      />
-      {/* Animated current stripes */}
-      <svg
-        style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
-        width={W}
-        height={H}
-      >
-        {/* Diagonal current lines */}
-        {[0.06, 0.14, 0.22, 0.30, 0.38, 0.46, 0.54, 0.62, 0.70, 0.78, 0.86, 0.94].map(
-          (yFrac, i) => (
-            <line
-              key={`river-line-${i}`}
-              x1={nearBankW + 10}
-              y1={H * yFrac}
-              x2={farBankX - 10}
-              y2={H * yFrac}
-              stroke={colors.riverCurrent}
-              strokeWidth={1.5}
-              strokeDasharray="32 20"
-              strokeDashoffset={currentOffset + i * 8}
-              opacity={0.18 + (i % 4) * 0.03}
-            />
-          )
-        )}
-        {/* River foam highlights near banks */}
+        <g transform={`translate(${mapX}, ${mapY}) scale(${mapScale})`}>
+          <image
+            href={riverBg}
+            x={0}
+            y={0}
+            width={ARTWORK_MAP.width}
+            height={ARTWORK_MAP.height}
+            preserveAspectRatio="xMidYMid slice"
+          />
+
+          <rect
+            x={0}
+            y={0}
+            width={ARTWORK_MAP.width}
+            height={ARTWORK_MAP.height}
+            fill="#0d1117"
+            opacity={0.14}
+          />
+
+          {/* Hidden squad pulse — near bank */}
+          {KACHIN_POSITIONS.map((sq) => {
+            const pos = ARTWORK_MAP.squads[sq.id as keyof typeof ARTWORK_MAP.squads];
+            if (!pos) return null;
+            return (
+              <g key={sq.id} opacity={squadPulse}>
+                <circle
+                  cx={pos.x}
+                  cy={pos.y}
+                  r={9}
+                  fill={colors.alliedPrimary}
+                  opacity={0.55}
+                  filter="url(#introBoatGlow)"
+                />
+                <circle
+                  cx={pos.x}
+                  cy={pos.y}
+                  r={5}
+                  fill={colors.jungleAccent}
+                  opacity={0.4}
+                />
+              </g>
+            );
+          })}
+
+          {/* Japanese rafts drifting downstream */}
+          {RAFTS.map((raft, i) => {
+            const enterDelay = 18 + i * 14;
+            const raftOpacity = interpolate(frame, [enterDelay, enterDelay + 22], [0, 1], {
+              extrapolateRight: 'clamp',
+            });
+            const progress = introRaftProgress(raft.id, frame, i);
+            const { x: rx, y: cy, angleDeg } = positionAlongRiverPath(progress);
+            const bw = boatSize.width;
+            const bh = boatSize.height;
+
+            return (
+              <g key={raft.id} opacity={raftOpacity}>
+                <ellipse
+                  cx={rx}
+                  cy={cy}
+                  rx={bh * 0.4}
+                  ry={bw * 0.9}
+                  fill={colors.japaneseAccent}
+                  opacity={0.22}
+                  filter="url(#introBoatGlow)"
+                  transform={`rotate(${angleDeg}, ${rx}, ${cy})`}
+                />
+                <image
+                  href={boatImg}
+                  x={-bw / 2}
+                  y={-bh / 2}
+                  width={bw}
+                  height={bh}
+                  preserveAspectRatio="xMidYMid meet"
+                  filter="url(#introBoatShadow)"
+                  transform={`translate(${rx}, ${cy}) rotate(${angleDeg})`}
+                />
+                <rect
+                  x={rx - 16}
+                  y={cy + bh * 0.34 + 2}
+                  width={32}
+                  height={13}
+                  rx={3}
+                  fill={colors.bgDark}
+                  opacity={0.75}
+                />
+                <text
+                  x={rx}
+                  y={cy + bh * 0.34 + 11}
+                  fill={colors.textPrimary}
+                  fontSize={8}
+                  textAnchor="middle"
+                  fontFamily={fonts.data}
+                  fontWeight={600}
+                >
+                  {raft.troops}
+                </text>
+              </g>
+            );
+          })}
+        </g>
+
+        {/* Edge vignette for legibility */}
         <rect
-          x={nearBankW}
+          x={0}
           y={0}
-          width={riverW * 0.04}
-          height={H}
-          fill={colors.riverFoam}
-          opacity={0.08}
-        />
-        <rect
-          x={farBankX - riverW * 0.04}
-          y={0}
-          width={riverW * 0.04}
-          height={H}
-          fill={colors.riverFoam}
-          opacity={0.06}
+          width={layout.width}
+          height={layout.height}
+          fill="url(#introVignette)"
+          opacity={0.55}
+          pointerEvents="none"
         />
       </svg>
 
-      {/* ── Near bank jungle ────────────────────────────────────────── */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          bottom: 0,
-          width: nearBankW,
-          background: `linear-gradient(90deg, ${colors.bgDark} 0%, ${colors.jungleDeep} 100%)`,
-          opacity: 0.97,
-        }}
-      />
-      {/* Near bank tree silhouettes */}
-      <svg
-        style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
-        width={W}
-        height={H}
-      >
-        {[0.05, 0.12, 0.20, 0.29, 0.38, 0.47, 0.56, 0.65, 0.74, 0.82, 0.91].map((t, i) => {
-          const tx = nearBankW - 22 - (i % 4) * 14;
-          const ty = H * t;
-          const s = 0.75 + (i % 4) * 0.18;
-          return (
-            <g key={`neartree-${i}`} opacity={0.55 + (i % 3) * 0.1}>
-              {/* Trunk */}
-              <rect
-                x={tx - 3}
-                y={ty + 10}
-                width={6}
-                height={20}
-                fill={colors.jungleDeep}
-                opacity={0.8}
-              />
-              {/* Canopy */}
-              <polygon
-                points={`${tx},${ty - 30 * s} ${tx - 18 * s},${ty + 12} ${tx + 18 * s},${ty + 12}`}
-                fill={colors.jungleDeep}
-              />
-              <polygon
-                points={`${tx},${ty - 48 * s} ${tx - 12 * s},${ty - 8 * s} ${tx + 12 * s},${ty - 8 * s}`}
-                fill={colors.jungleAccent}
-                opacity={0.25 + (i % 3) * 0.08}
-              />
-            </g>
-          );
-        })}
-        {/* Bank edge */}
-        <line
-          x1={nearBankW}
-          y1={0}
-          x2={nearBankW}
-          y2={H}
-          stroke={colors.jungleAccent}
-          strokeWidth={2}
-          opacity={0.35}
-        />
-      </svg>
-
-      {/* ── Japanese rafts ───────────────────────────────────────────── */}
-      {RAFTS.map((raft, i) => {
-        const drift = RAFT_DRIFT[i];
-        const enterDelay = 20 + i * 15;
-        const raftOpacity = interpolate(frame, [enterDelay, enterDelay + 20], [0, 0.92], {
-          extrapolateRight: 'clamp',
-        });
-        // Position: distributed across the river vertically
-        const baseY = 0.25 + i * 0.22;
-        const currentY = baseY + drift.speedY * Math.max(0, frame - enterDelay);
-        const currentX = 0.38 + i * 0.12 + drift.speedX * Math.max(0, frame - enterDelay);
-
-        const raftW = 100;
-        const raftH = 40;
-        const rx = W * currentX - raftW / 2;
-        const ry = H * currentY - raftH / 2;
-
-        return (
-          <div
-            key={raft.id}
-            style={{
-              position: 'absolute',
-              left: rx,
-              top: ry,
-              width: raftW,
-              height: raftH,
-              background: colors.japanesePrimary,
-              borderRadius: 6,
-              opacity: raftOpacity,
-              boxShadow: `0 4px 24px rgba(139,58,58,0.5), 0 0 8px rgba(139,58,58,0.3)`,
-              border: `1px solid ${colors.japaneseAccent}`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontFamily: fonts.data,
-              fontSize: 13,
-              fontWeight: 700,
-              color: colors.textPrimary,
-            }}
-          >
-            {raft.troops}
-          </div>
-        );
-      })}
-
-      {/* ── Title card (fades out) ───────────────────────────────────── */}
+      {/* Title card */}
       <div
         style={{
           position: 'absolute',
@@ -251,12 +205,12 @@ export const IrrawaddyIntro: React.FC = () => {
           pointerEvents: 'none',
         }}
       >
-        {/* Backdrop vignette for legibility */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(13,17,23,0.65) 0%, rgba(13,17,23,0) 100%)',
+            background:
+              'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(13,17,23,0.72) 0%, rgba(13,17,23,0) 100%)',
           }}
         />
         <div
@@ -303,9 +257,8 @@ export const IrrawaddyIntro: React.FC = () => {
         </div>
       </div>
 
-      {/* ── Simulation mode elements (fade in at transition) ─────────── */}
+      {/* Simulation mode transition */}
       <div style={{ opacity: simOpacity }}>
-        <LayerBadge mode="simulation" />
         <div
           style={{
             position: 'absolute',
@@ -319,13 +272,24 @@ export const IrrawaddyIntro: React.FC = () => {
             color: colors.hudPhosphor,
             letterSpacing: '0.1em',
             transform: `translateY(${phaseY}px)`,
-            textShadow: `0 0 40px rgba(201,162,39,0.4)`,
+            textShadow: '0 0 40px rgba(201,162,39,0.4)',
           }}
         >
           PHASE 1 · IMPULSE 1
         </div>
         <PhaseClock phase={1} impulse={1} />
       </div>
+
+      {/* Cold open fade from black */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: colors.bgDark,
+          opacity: fadeFromBlack,
+          pointerEvents: 'none',
+        }}
+      />
     </AbsoluteFill>
   );
 };

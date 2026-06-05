@@ -2,7 +2,6 @@ import React from 'react';
 import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
 import { colors, fonts, layout } from '../lib/theme';
 import { WeaponCard } from '../components/WeaponCard';
-import { LayerBadge } from '../components/VictoryDashboard';
 import { weapons as _weapons } from '../lib/phoenix';
 
 // Runtime access via string keys — weapons dict is untyped
@@ -80,8 +79,6 @@ export const ForcesInfographic: React.FC = () => {
         paddingTop: layout.safeMargin + 20,
       }}
     >
-      <LayerBadge mode="hybrid" />
-
       <div
         style={{
           fontFamily: fonts.headline,

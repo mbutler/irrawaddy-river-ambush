@@ -1,7 +1,6 @@
 import React from 'react';
 import { AbsoluteFill, interpolate, useCurrentFrame } from 'remotion';
 import { colors, fonts, layout } from '../lib/theme';
-import { LayerBadge } from '../components/VictoryDashboard';
 import { TacticalMap } from '../components/TacticalMap';
 
 const LAYERS = [
@@ -16,7 +15,6 @@ export const HistoricalMap: React.FC = () => {
 
   return (
     <AbsoluteFill style={{ background: colors.bgDark }}>
-      <LayerBadge mode="historical" />
       {/* Stylized Burma outline — placeholder SVG; replace with QGIS export in production */}
       <svg
         width={layout.width}
@@ -118,7 +116,6 @@ export const PhoenixPrimer: React.FC = () => {
 
   return (
     <AbsoluteFill style={{ background: colors.bgDark, justifyContent: 'center', alignItems: 'center' }}>
-      <LayerBadge mode="simulation" />
       <div style={{ fontFamily: fonts.headline, fontSize: 48, color: colors.hudPhosphor, marginBottom: 48 }}>
         PHOENIX COMMAND
       </div>
@@ -143,9 +140,21 @@ export const PhoenixPrimer: React.FC = () => {
 
 export const TacticalSetup: React.FC = () => {
   return (
-    <AbsoluteFill style={{ background: colors.bgDark, justifyContent: 'center', alignItems: 'center' }}>
-      <LayerBadge mode="hybrid" />
-      <TacticalMap phase={1} activeSquads={[]} activeRafts={['raft-1', 'raft-2', 'raft-3']} startFrame={0} />
+    <AbsoluteFill
+      style={{
+        background: colors.bgDark,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: layout.safeMargin,
+      }}
+    >
+      <TacticalMap
+        size="hero"
+        phase={1}
+        activeSquads={[]}
+        activeRafts={['raft-1', 'raft-2', 'raft-3']}
+        startFrame={0}
+      />
     </AbsoluteFill>
   );
 };
