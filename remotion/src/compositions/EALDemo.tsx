@@ -1,5 +1,5 @@
 import React from 'react';
-import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, Sequence, interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
 import { colors, fonts } from '../lib/theme';
 import { EALPanel } from '../components/EALPanel';
 import { DiceRoller } from '../components/DiceRoller';
@@ -86,7 +86,7 @@ export const EALDemo: React.FC = () => {
         />
       </div>
 
-      {/* Dice roller — visible from 8s onwards */}
+      {/* Dice roller — scrambles from 8s, locks at 10.5s (Sequence gives it a local clock) */}
       <div
         style={{
           position: 'absolute',
@@ -97,7 +97,9 @@ export const EALDemo: React.FC = () => {
           opacity: diceOpacity,
         }}
       >
-        <DiceRoller targetRoll={22} odds={demo.odds} lockFrame={fps * 10 - fps * 8} />
+        <Sequence from={fps * 8} layout="none">
+          <DiceRoller targetRoll={22} odds={demo.odds} lockFrame={fps * 2.5} />
+        </Sequence>
       </div>
 
       {/* Step-by-step annotations */}

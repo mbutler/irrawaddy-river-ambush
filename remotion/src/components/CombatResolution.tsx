@@ -6,7 +6,7 @@ import { DiceRoller } from './DiceRoller';
 import { PhaseClock } from './PhaseClock';
 import { TacticalMap } from './TacticalMap';
 import { CharacterCard, KVGauge } from './CharacterCard';
-import { getBeat, KACHIN, JAPANESE } from '../data/scenario';
+import { getBeat, COMBAT_BEATS, KACHIN, JAPANESE } from '../data/scenario';
 import { resolveDamage } from '../lib/phoenix';
 import type { CombatBeat } from '../data/scenario';
 
@@ -222,10 +222,13 @@ export const CombatResolution: React.FC<CombatResolutionProps> = ({ beatId }) =>
       ? resolveDamage(beat.shot.weaponName, beat.shot.rangeHexes, beat.scriptedHitRoll)
       : null;
 
-  const tracerFrom =
-    shooter?.side === 'kachin' ? CHAR_TO_SQUAD[beat.shooterId] : beat.targetRaftId;
-  const tracerTo =
-    shooter?.side === 'kachin' ? beat.targetRaftId : CHAR_TO_SQUAD[beat.shooterId] ?? 'alpha';
+  const isKachinShooter = shooter?.side === 'kachin';
+  const shooterUnit = CHAR_TO_SQUAD[beat.shooterId];
+  // Japanese beats: targetRaftId holds the targeted squad id; the shooter sits on a raft
+  const tracerFrom = shooterUnit;
+  const tracerTo = beat.targetRaftId;
+  const showTracer = beat.beatType === 'fire';
+  const beatNumber = COMBAT_BEATS.findIndex((b) => b.id === beat.id) + 1;
 
   const titleOpacity = interpolate(frame, [0, 15], [0, 1], { extrapolateRight: 'clamp' });
   const titleY = interpolate(frame, [0, 15], [-12, 0], { extrapolateRight: 'clamp' });
@@ -252,7 +255,7 @@ export const CombatResolution: React.FC<CombatResolutionProps> = ({ beatId }) =>
           right: layout.safeMargin,
           textAlign: 'center',
           fontFamily: fonts.headline,
-          fontSize: 26,
+          fontSize: 34,
           fontWeight: 700,
           letterSpacing: '0.08em',
           color: colors.textPrimary,
@@ -279,10 +282,11 @@ export const CombatResolution: React.FC<CombatResolutionProps> = ({ beatId }) =>
       >
         <TacticalMap
           phase={beat.phase}
-          activeSquads={shooter?.side === 'kachin' ? [CHAR_TO_SQUAD[beat.shooterId]] : []}
-          activeRafts={[beat.targetRaftId]}
-          tracerFrom={shooter?.side === 'kachin' ? tracerFrom : undefined}
-          tracerTo={shooter?.side === 'kachin' ? beat.targetRaftId : undefined}
+          activeSquads={isKachinShooter ? [shooterUnit] : [beat.targetRaftId]}
+          activeRafts={isKachinShooter ? [beat.targetRaftId] : [shooterUnit]}
+          tracerFrom={showTracer ? tracerFrom : undefined}
+          tracerTo={showTracer ? tracerTo : undefined}
+          tracerColor={isKachinShooter ? colors.alliedTracer : colors.japaneseAccent}
           sunkRafts={beat.beatType === 'morale' ? ['raft-1'] : []}
         />
 
@@ -352,7 +356,7 @@ export const CombatResolution: React.FC<CombatResolutionProps> = ({ beatId }) =>
         </Sequence>
       </div>
 
-      <PhaseClock phase={beat.phase} impulse={beat.impulse} />
+      <PhaseClock phase={beat.phase} impulse={beat.impulse} elapsedPhases={beatNumber} />
     </AbsoluteFill>
   );
 };

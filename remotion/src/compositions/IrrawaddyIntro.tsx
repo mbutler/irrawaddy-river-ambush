@@ -48,6 +48,12 @@ export const IrrawaddyIntro: React.FC = () => {
 
   const simOpacity = interpolate(frame, [115, 140], [0, 1], { extrapolateRight: 'clamp' });
 
+  // Big phase callout holds ~4s, then hands off to the phase clock at the bottom
+  const phaseTextOpacity = interpolate(frame, [115, 140, 250, 280], [0, 1, 1, 0], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+
   const phaseY = interpolate(frame, [125, 145], [30, 0], { extrapolateRight: 'clamp' });
 
   const squadPulse = interpolate(frame, [52, 72, 92, 112], [0, 0.32, 0.32, 0], {
@@ -258,25 +264,26 @@ export const IrrawaddyIntro: React.FC = () => {
       </div>
 
       {/* Simulation mode transition */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontFamily: fonts.headline,
+          fontSize: 64,
+          fontWeight: 800,
+          color: colors.hudPhosphor,
+          letterSpacing: '0.1em',
+          opacity: phaseTextOpacity,
+          transform: `translateY(${phaseY}px)`,
+          textShadow: '0 0 40px rgba(201,162,39,0.4)',
+        }}
+      >
+        PHASE 1 · IMPULSE 1
+      </div>
       <div style={{ opacity: simOpacity }}>
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: fonts.headline,
-            fontSize: 64,
-            fontWeight: 800,
-            color: colors.hudPhosphor,
-            letterSpacing: '0.1em',
-            transform: `translateY(${phaseY}px)`,
-            textShadow: '0 0 40px rgba(201,162,39,0.4)',
-          }}
-        >
-          PHASE 1 · IMPULSE 1
-        </div>
         <PhaseClock phase={1} impulse={1} />
       </div>
 

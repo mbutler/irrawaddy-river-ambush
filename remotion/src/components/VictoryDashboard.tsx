@@ -12,12 +12,19 @@ export const VictoryDashboard: React.FC<VictoryDashboardProps> = ({ startFrame =
   const local = Math.max(0, frame - startFrame);
   const v = VICTORY.kachin;
 
-  const rows = [
-    { label: 'Rafts sunk', kachin: `${v.raftsSunk}/${v.raftsTotal}`, japanese: `${v.raftsTotal - v.raftsSunk} escaped` },
-    { label: 'Troops eliminated', kachin: `${v.japaneseKIA} KIA`, japanese: `${v.japaneseTotal - v.japaneseKIA} survived` },
-    { label: 'Kachin losses', kachin: `${v.kachinKIA} KIA, ${v.kachinWounded} WIA`, japanese: '—' },
-    { label: 'Duration', kachin: `${v.durationPhases} phases (${v.durationMinutes.toFixed(1)} min)`, japanese: '—' },
-    { label: 'Intelligence', kachin: `${v.intelRecovered} item recovered`, japanese: '—' },
+  const kachinRows = [
+    { label: 'Rafts sunk', value: `${v.raftsSunk} of ${v.raftsTotal}` },
+    { label: 'Japanese eliminated', value: `${v.japaneseKIA} of ${v.japaneseTotal} KIA` },
+    { label: 'Own losses', value: `${v.kachinKIA} KIA · ${v.kachinWounded} WIA` },
+    { label: 'Intelligence', value: `${v.intelRecovered} item recovered` },
+    { label: 'Victory threshold', value: VICTORY.thresholds.kachinMajor },
+  ];
+  const japaneseRows = [
+    { label: 'Rafts escaped', value: `${v.raftsTotal - v.raftsSunk} of ${v.raftsTotal}` },
+    { label: 'Troops surviving', value: `${v.japaneseTotal - v.japaneseKIA} of ${v.japaneseTotal}` },
+    { label: 'Raft 1', value: 'Sunk — crew surrendered' },
+    { label: 'Raft 2', value: 'Sunk in the kill zone' },
+    { label: 'Raft 3', value: 'Beached far bank — no pursuit' },
   ];
 
   return (
@@ -33,17 +40,31 @@ export const VictoryDashboard: React.FC<VictoryDashboardProps> = ({ startFrame =
         style={{
           textAlign: 'center',
           fontFamily: fonts.headline,
-          fontSize: 48,
+          fontSize: 56,
+          fontWeight: 700,
           color: colors.hudPhosphor,
           letterSpacing: 4,
-          marginBottom: 32,
+          marginBottom: 12,
+          textShadow: '0 0 32px rgba(201,162,39,0.35)',
         }}
       >
         {v.result}
       </div>
+      <div
+        style={{
+          textAlign: 'center',
+          fontFamily: fonts.data,
+          fontSize: 15,
+          color: colors.textSecondary,
+          letterSpacing: '0.15em',
+          marginBottom: 36,
+        }}
+      >
+        {v.durationPhases} PHASES · {v.durationMinutes.toFixed(1)} MINUTES OF SIMULATED COMBAT
+      </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
-        <SidePanel title="KACHIN RANGERS" accent={colors.alliedPrimary} rows={rows.map((r) => ({ label: r.label, value: r.kachin }))} delay={10} />
-        <SidePanel title="JAPANESE 15th ARMY" accent={colors.japanesePrimary} rows={rows.map((r) => ({ label: r.label, value: r.japanese }))} delay={20} />
+        <SidePanel title="KACHIN RANGERS" accent={colors.alliedPrimary} rows={kachinRows} delay={10} />
+        <SidePanel title="JAPANESE 15th ARMY" accent={colors.japanesePrimary} rows={japaneseRows} delay={20} />
       </div>
     </div>
   );

@@ -16,8 +16,11 @@ interface TacticalMapProps {
   phase: number;
   activeSquads?: string[];
   activeRafts?: string[];
+  /** Squad or raft id — resolves against squads first, then rafts on the river path */
   tracerFrom?: string;
   tracerTo?: string;
+  /** Tracer stroke — defaults to allied amber; pass japaneseAccent for return fire */
+  tracerColor?: string;
   raftCasualties?: Record<string, number>;
   sunkRafts?: string[];
   startFrame?: number;
@@ -31,6 +34,7 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
   activeRafts = [],
   tracerFrom,
   tracerTo,
+  tracerColor = colors.alliedTracer,
   raftCasualties = {},
   sunkRafts = [],
   startFrame = 0,
@@ -59,8 +63,18 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
     return pos ? { x: pos.x, y: pos.y } : { x: 0, y: 0 };
   };
 
-  const fromSq = tracerFrom ? squadPosition(tracerFrom) : null;
-  const toRf = tracerTo ? raftPosition(tracerTo) : null;
+  /** Tracer endpoints accept squad ids or raft ids (Kachin fire or Japanese return fire) */
+  const unitPosition = (id: string): { x: number; y: number } | null => {
+    if (ARTWORK_MAP.squads[id as keyof typeof ARTWORK_MAP.squads]) return squadPosition(id);
+    if (ARTWORK_MAP.rafts[id as keyof typeof ARTWORK_MAP.rafts]) {
+      const { x, y } = raftPosition(id);
+      return { x, y };
+    }
+    return null;
+  };
+
+  const fromSq = tracerFrom ? unitPosition(tracerFrom) : null;
+  const toRf = tracerTo ? unitPosition(tracerTo) : null;
 
   let tracerProgress = 0;
   if (fromSq && toRf && local > 8) {
@@ -73,6 +87,10 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
   const toY = toRf?.y ?? 0;
 
   const tracerLength = fromSq && toRf ? Math.hypot(toX - fromX, toY - fromY) : 0;
+
+  // Slow drift of current chevrons downstream (loops over the visible stretch)
+  const chevronDrift = (local * 0.0006) % 0.2;
+  const activePulse = 0.75 + 0.25 * Math.sin((local / 15) * Math.PI * 2);
 
   const riverBg = staticFile('assets/river-graphic.png');
   const boatImg = staticFile('assets/boat.png');
@@ -92,9 +110,9 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
       <div
         style={{
           color: colors.textSecondary,
-          fontSize: isHero ? 12 : 10,
+          fontSize: isHero ? 20 : 10,
           letterSpacing: '0.2em',
-          marginBottom: isHero ? 10 : 8,
+          marginBottom: isHero ? 12 : 8,
           display: 'flex',
           justifyContent: 'space-between',
         }}
@@ -139,6 +157,27 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
 
         {/* Subtle vignette so HUD tokens read clearly */}
         <rect x={0} y={0} width={baseW} height={baseH} fill="#0d1117" opacity={0.12} />
+
+        {/* Current chevrons drifting downstream along the channel */}
+        {[0.08, 0.28, 0.48, 0.68, 0.88].map((base, i) => {
+          const t = Math.min(0.98, base + chevronDrift);
+          const { x, y, angleDeg } = positionAlongRiverPath(t);
+          return (
+            <g
+              key={`chev-${i}`}
+              transform={`translate(${x}, ${y}) rotate(${angleDeg - 90})`}
+              opacity={0.35}
+            >
+              <path
+                d="M -4 -6 L 4 0 L -4 6"
+                fill="none"
+                stroke={colors.riverFoam}
+                strokeWidth={1.5}
+                strokeLinecap="round"
+              />
+            </g>
+          );
+        })}
 
         {/* Debug: river centerline — enable DEBUG_RIVER_PATH in mapLayout.ts while calibrating */}
         {DEBUG_RIVER_PATH && (
@@ -220,7 +259,7 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
           <path
             d={`M ${fromX} ${fromY} C ${fromX + (toX - fromX) * 0.35} ${fromY} ${fromX + (toX - fromX) * 0.65} ${toY} ${toX} ${toY}`}
             fill="none"
-            stroke={colors.alliedPrimary}
+            stroke={tracerColor}
             strokeWidth={1.5}
             strokeDasharray="6 6"
             opacity={interpolate(local, [0, 15], [0, 0.55], { extrapolateRight: 'clamp' })}
@@ -235,7 +274,7 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
               y1={fromY}
               x2={toX}
               y2={toY}
-              stroke={colors.alliedTracer}
+              stroke={tracerColor}
               strokeWidth={5}
               strokeDasharray={`${tracerLength} ${tracerLength}`}
               strokeDashoffset={tracerLength * (1 - tracerProgress)}
@@ -247,7 +286,7 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
               y1={fromY}
               x2={toX}
               y2={toY}
-              stroke={colors.alliedTracer}
+              stroke={tracerColor}
               strokeWidth={2}
               strokeDasharray={`${tracerLength} ${tracerLength}`}
               strokeDashoffset={tracerLength * (1 - tracerProgress)}
@@ -266,61 +305,72 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
           const bw = boatSize.width;
           const bh = boatSize.height;
 
+          // On-screen vertical half-extent of the rotated hull, so labels clear it at any heading
+          const rad = (angleDeg * Math.PI) / 180;
+          const halfV = (bw * Math.abs(Math.cos(rad)) + bh * Math.abs(Math.sin(rad))) / 2 + 4;
+          const highlight = tracerColor;
+
           return (
             <g key={raft.id} opacity={sunk ? 0.4 : 1}>
-              {active && !sunk && (
-                <ellipse
-                  cx={rx}
-                  cy={cy}
-                  rx={bh * 0.35}
-                  ry={bw * 0.85}
-                  fill="none"
-                  stroke={colors.alliedTracer}
-                  strokeWidth={2}
-                  opacity={0.75}
-                  filter="url(#tokenGlow)"
-                  transform={`rotate(${angleDeg}, ${rx}, ${cy})`}
+              {/* Hull-aligned elements share the boat's local frame (bow = −Y) */}
+              <g transform={`translate(${rx}, ${cy}) rotate(${angleDeg})`}>
+                {active && !sunk && (
+                  <rect
+                    x={-bw / 2 - 4}
+                    y={-bh / 2 - 4}
+                    width={bw + 8}
+                    height={bh + 8}
+                    rx={6}
+                    fill="none"
+                    stroke={highlight}
+                    strokeWidth={2}
+                    opacity={activePulse}
+                    filter="url(#tokenGlow)"
+                  />
+                )}
+
+                <image
+                  href={boatImg}
+                  x={-bw / 2}
+                  y={-bh / 2}
+                  width={bw}
+                  height={bh}
+                  preserveAspectRatio="xMidYMid meet"
+                  filter={sunk ? undefined : 'url(#boatShadow)'}
+                  opacity={sunk ? 0.55 : 1}
                 />
-              )}
 
-              <image
-                href={boatImg}
-                x={-bw / 2}
-                y={-bh / 2}
-                width={bw}
-                height={bh}
-                preserveAspectRatio="xMidYMid meet"
-                filter={sunk ? undefined : 'url(#boatShadow)'}
-                opacity={sunk ? 0.55 : 1}
-                transform={`translate(${rx}, ${cy}) rotate(${angleDeg})`}
-              />
+                {sunk && (
+                  <>
+                    <line
+                      x1={-bw / 2}
+                      y1={-bh / 2}
+                      x2={bw / 2}
+                      y2={bh / 2}
+                      stroke={colors.hudRed}
+                      strokeWidth={2.5}
+                      opacity={0.9}
+                    />
+                    <line
+                      x1={bw / 2}
+                      y1={-bh / 2}
+                      x2={-bw / 2}
+                      y2={bh / 2}
+                      stroke={colors.hudRed}
+                      strokeWidth={2.5}
+                      opacity={0.9}
+                    />
+                  </>
+                )}
 
-              {sunk && (
-                <g transform={`translate(${rx}, ${cy}) rotate(${angleDeg})`}>
-                  <line
-                    x1={-bw / 2}
-                    y1={-bh / 2}
-                    x2={bw / 2}
-                    y2={bh / 2}
-                    stroke={colors.hudRed}
-                    strokeWidth={2.5}
-                    opacity={0.9}
-                  />
-                  <line
-                    x1={bw / 2}
-                    y1={-bh / 2}
-                    x2={-bw / 2}
-                    y2={bh / 2}
-                    stroke={colors.hudRed}
-                    strokeWidth={2.5}
-                    opacity={0.9}
-                  />
-                </g>
-              )}
+                {raft.lmg && !sunk && (
+                  <circle cx={0} cy={-bh / 2 + 4} r={3} fill={colors.japaneseAccent} stroke={colors.bgDark} strokeWidth={0.75} />
+                )}
+              </g>
 
               <rect
                 x={rx - 18}
-                y={cy + bh * 0.35 + 2}
+                y={cy + halfV + 2}
                 width={36}
                 height={14}
                 rx={3}
@@ -329,7 +379,7 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
               />
               <text
                 x={rx}
-                y={cy + bh * 0.35 + 12}
+                y={cy + halfV + 12}
                 fill={sunk ? colors.textMuted : colors.textPrimary}
                 fontSize={9}
                 textAnchor="middle"
@@ -341,24 +391,16 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
 
               <text
                 x={rx}
-                y={cy - bh * 0.35 - 6}
-                fill={active ? colors.alliedTracer : colors.textPrimary}
+                y={cy - halfV - 5}
+                fill={active ? highlight : colors.textPrimary}
                 fontSize={8}
                 textAnchor="middle"
                 fontFamily={fonts.data}
                 fontWeight={active ? 600 : 400}
+                style={{ textShadow: '0 1px 3px rgba(0,0,0,0.9)' }}
               >
                 {layout?.label ?? raft.label}
               </text>
-
-              {raft.lmg && !sunk && (
-                <circle
-                  cx={rx + Math.cos((angleDeg * Math.PI) / 180) * (bh * 0.35)}
-                  cy={cy + Math.sin((angleDeg * Math.PI) / 180) * (bh * 0.35)}
-                  r={4}
-                  fill={colors.japaneseAccent}
-                />
-              )}
             </g>
           );
         })}
@@ -368,8 +410,8 @@ export const TacticalMap: React.FC<TacticalMapProps> = ({
       <div
         style={{
           color: colors.textMuted,
-          fontSize: isHero ? 10 : 9,
-          marginTop: isHero ? 8 : 6,
+          fontSize: isHero ? 15 : 9,
+          marginTop: isHero ? 10 : 6,
           letterSpacing: '0.05em',
         }}
       >

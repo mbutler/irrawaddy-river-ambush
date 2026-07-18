@@ -15,10 +15,10 @@ export const PhaseClock: React.FC<PhaseClockProps> = ({ phase, impulse, elapsedP
   // Phase time: each phase = 2 seconds, each impulse = 0.5 seconds
   const seconds = (phase - 1) * 2 + (impulse - 1) * 0.5;
 
-  // Individual impulse bar animations — each bar pulses only when it is the active bar
-  const barPulse = interpolate(frame % fps, [0, fps / 2, fps], [1, 1.0, 1], {
-    extrapolateRight: 'clamp',
-  });
+  // Active impulse bar breathes gently at ~1 Hz (scale + glow, per style guide "restraint")
+  const breathe = Math.sin((frame / fps) * Math.PI * 2);
+  const barPulse = 1 + 0.12 * (0.5 + 0.5 * breathe);
+  const glowStrength = 10 + 6 * (0.5 + 0.5 * breathe);
 
   // Fade in the clock on mount
   const clockOpacity = interpolate(frame, [0, 12], [0, 1], { extrapolateRight: 'clamp' });
@@ -75,7 +75,7 @@ export const PhaseClock: React.FC<PhaseClockProps> = ({ phase, impulse, elapsedP
                   background: isPast || isActive ? colors.hudPhosphor : colors.bgPanelBorder,
                   opacity: isPast ? 0.5 : 1,
                   boxShadow:
-                    isActive ? `0 0 14px ${colors.hudPhosphor}, 0 0 4px ${colors.hudPhosphor}` : undefined,
+                    isActive ? `0 0 ${glowStrength}px ${colors.hudPhosphor}, 0 0 4px ${colors.hudPhosphor}` : undefined,
                   transform: `scaleY(${barScale})`,
                   transformOrigin: 'center',
                   transition: undefined, // no CSS transitions in Remotion
